@@ -1,5 +1,10 @@
 <template>
-  <router-view />
+  <div>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+  </div>
 </template>
 
 <style lang="scss">
@@ -14,8 +19,7 @@
     url("assets/iconfont/iconfont.woff?t=1591864912081") format("woff"),
     url("assets/iconfont/iconfont.ttf?t=1591864912081") format("truetype"),
     /* chrome, firefox, opera, Safari, Android, iOS 4.2+ */
-      url("assets/iconfont/iconfont.svg?t=1591864912081#iconfont")
-      format("svg"); /* iOS 4.1- */
+      url("assets/iconfont/iconfont.svg?t=1591864912081#iconfont") format("svg"); /* iOS 4.1- */
 }
 
 .iconfont {

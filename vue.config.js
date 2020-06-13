@@ -17,6 +17,7 @@ module.exports = {
                 '@': path.resolve(__dirname, './src'),
                 'public': path.resolve(__dirname, './public'),
                 '@c': path.resolve(__dirname, './src/components'),
+                '@b': path.resolve(__dirname, './src/baseui'),
             }
         }
     },

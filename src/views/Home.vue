@@ -7,9 +7,9 @@
     </div>
     <div class="tab">
       <div class="tabItem">
-        <router-link to="/recommend">
-          <span>推荐</span>
-        </router-link>
+          <router-link to="/recommend">
+            <span>推荐</span>
+          </router-link>
       </div>
       <div class="tabItem">
         <router-link to="/singers">

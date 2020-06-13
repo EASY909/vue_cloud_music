@@ -28,7 +28,7 @@ export default {
   props: {
     bannerList: {
       type: Array,
-      default: []
+      default: [1]
     }
   },
   data() {
@@ -41,23 +41,18 @@ export default {
   watch: {},
   //方法集合
   methods: {},
-  //生命周期 - 创建完成（可以访问当前this实例）
-  created() {},
-  //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    let newSliderSwiper = new Swiper(".slider-container", {
-      loop: true,
-      autoplay: {
-        delay: 3000,
-        disableOnInteraction: false
-      },
-      pagination: { el: ".swiper-pagination" }
-    });
-  },
-  beforeCreate() {}, //生命周期 - 创建之前
-  beforeMount() {}, //生命周期 - 挂载之前
-  beforeUpdate() {}, //生命周期 - 更新之前
-  updated() {}, //生命周期 - 更新之后
+  updated() {
+    if (this.bannerList.length !== 0) {
+      let newSliderSwiper = new Swiper(".slider-container", {
+        loop: true,
+        autoplay: {
+          delay: 3000,
+          disableOnInteraction: false
+        },
+        pagination: { el: ".swiper-pagination" }
+      });
+    }
+  }, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
@@ -75,8 +70,8 @@ export default {
   background: white;
   .before {
     position: absolute;
-    top: 0;
-    height: 60%;
+    top: -300px;
+    height: 400px;
     width: 100%;
     background: $themeColor;
   }

@@ -1,7 +1,15 @@
 <!--  -->
 <template>
-  <div>
-    <Slider :bannerList="bannerList" />
+  <div class="content">
+    <Scroll @onScroll="onScroll" :scrollconfig="scrollconfig">
+      <div>
+        <Slider :bannerList="bannerList" />
+     
+          <RecommendList :recommendList="recommendList" />
+     
+      </div>
+    </Scroll>
+    <Loading v-show="loading" />
   </div>
 </template>
 
@@ -9,14 +17,32 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import Slider from "@c/Slider";
+import Scroll from "@b/Scroll";
+import RecommendList from "@c/List";
+import Loading from "@b/Loading";
+
 export default {
   name: "Recommend",
   //import引入的组件需要注入到对象中才能使用
-  components: { Slider },
+  components: { Slider, Scroll, RecommendList, Loading },
   data() {
     //这里存放数据
     return {
-      bannerList: []
+      bannerList: [],
+      recommendList: [],
+      scrollconfig: {
+        eventPassthrough: "vertical",
+        click: true,
+        refresh: true,
+        onScroll: true,
+        pullUp: true,
+        pullDown: false,
+        pullUpLoading: false,
+        pullDownLoading: false,
+        bounceTop: true,
+        bounceBottom: true
+      },
+      loading: true
     };
   },
   //监听属性 类似于data概念
@@ -24,15 +50,36 @@ export default {
   //监控data中的数据变化
   watch: {},
   //方法集合
-  methods: {},
+  methods: {
+    onScroll(pos) {
+      console.log(pos);
+    }
+  },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
-    this.bannerList = [1, 2, 3, 4].map(item => {
-      return {
-        imageUrl:
-          "http://p1.music.126.net/ZYLJ2oZn74yUz5x8NBGkVA==/109951164331219056.jpg"
-      };
-    });
+    if (!this.bannerList.length) {
+      this.$store
+        .dispatch("Recommend/getBannerList")
+        .then(res => {
+          this.bannerList = res;
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+
+    if (!this.recommendList.length) {
+      this.$store
+        .dispatch("Recommend/getRecommendList")
+        .then(res => {
+          this.recommendList = res;
+          this.$store.commit("Recommend/changeEnterLoading", false);
+          this.loading = this.$store.getters["Recommend/enterLoading"];
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   },
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -47,4 +94,10 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
+.content {
+  position: fixed;
+  top: 90px;
+  bottom: 0;
+  width: 100%;
+}
 </style>
