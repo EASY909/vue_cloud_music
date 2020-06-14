@@ -3,9 +3,11 @@ import Vuex from "vuex";
 Vue.use(Vuex);
 
 import Recommend from "./modules/Recommend";
+import Singers from "./modules/Singers"
 export default new Vuex.Store({
   strict: true,
   modules: {
-    Recommend
+    Recommend,
+    Singers
   }
 })

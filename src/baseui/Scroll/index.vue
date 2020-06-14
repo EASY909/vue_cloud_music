@@ -21,7 +21,20 @@ export default {
   },
   data() {
     //这里存放数据
-    return {};
+    return {
+      scrollConfig: {
+        eventPassthrough: "vertical",
+        click: true,
+        refresh: true,
+        onScroll: true,
+        pullUp: true,
+        pullDown: false,
+        pullUpLoading: false,
+        pullDownLoading: false,
+        bounceTop: true,
+        bounceBottom: true
+      }
+    };
   },
   //监听属性 类似于data概念
   computed: {},
@@ -33,26 +46,30 @@ export default {
       if (!this.$refs.wrapper) {
         return;
       }
+   
+      for (const key in this.scrollconfig) {
+        this.scrollConfig[key]=this.scrollconfig[key]
+      }
       // better-scroll的初始化
       this.scroll = new BScroll(this.$refs.wrapper, {
-        scrollX: this.scrollconfig.eventPassthrough === "horizental",
-        scrollY: this.scrollconfig.eventPassthrough === "vertical",
+        scrollX: this.scrollConfig.eventPassthrough === "horizental",
+        scrollY: this.scrollConfig.eventPassthrough === "vertical",
         probeType: 3,
-        click: this.scrollconfig.click,
+        click: this.scrollConfig.click,
         bounce: {
-          top: this.scrollconfig.bounceTop,
-          bottom: this.scrollconfig.bounceBottom
+          top: this.scrollConfig.bounceTop,
+          bottom: this.scrollConfig.bounceBottom
         }
       });
 
-      if (this.scrollconfig.onScroll) {
+      if (this.scrollConfig.onScroll) {
         this.scroll.on("scroll", pos => {
           this.$emit("onScroll", pos);
         });
       }
 
       // 是否派发滚动到底部事件，用于上拉加载
-      if (this.scrollconfig.pullUp) {
+      if (this.scrollConfig.pullUp) {
         this.scroll.on("scrollEnd", () => {
           // 滚动到底部
           if (this.scroll.y <= this.scroll.maxScrollY + 100) {
@@ -62,7 +79,7 @@ export default {
       }
 
       // 是否派发顶部下拉事件，用于下拉刷新
-      if (this.scrollconfig.pullDown) {
+      if (this.scrollConfig.pullDown) {
         this.scroll.on("touchend", pos => {
           // 下拉动作
           if (pos.y > 50) {

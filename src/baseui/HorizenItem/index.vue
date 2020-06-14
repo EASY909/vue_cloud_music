@@ -4,7 +4,12 @@
     <div ref="Category">
       <div class="List">
         <span>{{title}}</span>
-        <span :class="[oldVal === item.key ? 'selected': '',ListItem]" @click="handleClick(item.key)" v-for="item in list" :key="item.key">{{item.name}}</span>
+        <span
+          :class="ListItem"
+          @click="handleClick(item.key,$event)"
+          v-for="item in list"
+          :key="item.key"
+        >{{item.name}}</span>
       </div>
     </div>
   </Scroll>
@@ -22,10 +27,6 @@ export default {
     list: {
       type: Array,
       default: []
-    },
-    oldVal: {
-      type: String,
-      default: ""
     },
     title: {
       type: String,
@@ -47,7 +48,7 @@ export default {
         bounceTop: true,
         bounceBottom: true
       },
-      ListItem:"ListItem"
+      ListItem: "ListItem",
     };
   },
   //监听属性 类似于data概念
@@ -57,10 +58,14 @@ export default {
   //方法集合
   methods: {
     onScroll(pos) {
-    //   console.log(pos);
+      //   console.log(pos);
     },
-    handleClick(val){
-        this.$emit("handleClick",val)
+    handleClick(val,event) {
+      // this.oldVal=val;
+      this.$emit("handleClick", val);
+      console.log( event);
+      event.target.classList.add("selected");
+      event.target.previousElementSibling.classList.remove("selected");
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
