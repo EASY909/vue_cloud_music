@@ -6,16 +6,26 @@
       <Horizen :list="alphaTypes" title="首字母:" @handleClick="handleUpdateAlpha" />
     </div>
     <div class="ListContainer">
-      <Scroll :scrollconfig="scrollconfig">
+      <Scroll
+        :pullUpLoading="pullUpLoading"
+        :pullDownLoading="pullDownLoading"
+        :scrollconfig="scrollconfig"
+        @pullUp="handlePullUp"
+        @pullDown="handlePullDown"
+      >
         <div class="List">
-          <div class="ListItem" v-for="(item) in singerList" :key="item.accountId">
-            <div class="img_wrapper">
-              <img :src="item.picUrl+'?param=300x300'" width="100%" height="100%" alt="music" />
+          <div class="ListItem" v-for="(item,index) in singerList" :key="item.accountId+''+index">
+            <!-- <div v-lazy-container="{ selector: 'img', loading: imgUrl }">
+              <img :data-src="item.picUrl+ `?param=300x300`" width="100%" height="100%" alt="music" />
+            </div>-->
+            <div class="img_wrapper" v-lazy-container="{ selector: 'img', loading: imgUrl }">
+              <img :data-src="item.picUrl+'?param=300x300'" width="100%" height="100%" alt="music" />
             </div>
             <span class="name">{{item.name}}</span>
           </div>
         </div>
       </Scroll>
+      <Loading v-show="loading" />
     </div>
   </div>
 </template>
@@ -25,20 +35,30 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import Horizen from "@b/HorizenItem";
 import Scroll from "@b/Scroll";
+import Loading from "@b/Loading";
 import { categoryTypes, alphaTypes } from "@/api/config";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Singers",
-  components: { Horizen, Scroll },
+  components: { Horizen, Scroll, Loading },
   data() {
     //这里存放数据
     return {
       categoryTypes,
       alphaTypes,
-      cate: "",
+      category: "",
       alpha: "",
       singerList: this.$store.getters["Singers/singerList"],
-      scrollconfig: {}
+      scrollconfig: {
+        pullUp: true,
+        pullDown: true
+        // pullUpLoading: true,
+        // pullDownLoading: true
+      },
+      pullUpLoading: false,
+      pullDownLoading: false,
+      loading: true,
+      imgUrl: require("@/assets/music.png")
     };
   },
   //监听属性 类似于data概念
@@ -51,27 +71,27 @@ export default {
   //方法集合
   methods: {
     handleUpdateCatetory(val) {
-      this.cate = val;
+      this.category = val;
       this.updateDispatch(val, this.alpha);
       console.log(val);
     },
     handleUpdateAlpha(val) {
-      console.log(val);
       this.alpha = val;
-      this.updateDispatch(this.cate, val);
+      this.updateDispatch(this.category, val);
+      console.log(val);
     },
     getHotSingerDispatch() {
       this.$store.dispatch("Singers/getHotSingerList").then(res => {
         this.singerList = res;
+        this.loading = this.$store.getters["Singers/enterLoading"];
       });
     },
     updateDispatch(category, alpha) {
-      console.log(11);
       let reqData = {
         category,
         alpha
       };
-      this.$store.commit("Singers/changePageCount", 0);
+      this.$store.commit("Singers/changeListOffset", 0);
       this.$store.commit("Singers/changeEnterLoading", true);
       this.$store.dispatch("Singers/getSingerList", reqData).then(res => {
         this.singerList = res;
@@ -80,16 +100,55 @@ export default {
     // 滑到最底部刷新部分的处理
     pullUpRefreshDispatch(category, alpha, hot, count) {
       this.$store.commit("Singers/changePullUpLoading", true);
-      this.$store.commit("Singers/changePageCount", count + 1);
+      // this.$store.commit("Singers/changeListOffset", count + 1);
+      this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
+
       if (hot) {
-        this.$store.dispatch("Singers/refreshMoreHotSingerList");
+        this.$store.dispatch("Singers/refreshMoreHotSingerList").then(res => {
+          this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
+          this.singerList = res;
+        });
       } else {
         let reqData = {
           category,
           alpha
         };
-        this.$store.dispatch("Singers/refreshMoreSingerList", reqData);
+        this.$store.dispatch("Singers/refreshMoreSingerList", reqData).then(res => {
+          this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
+          this.singerList = res;
+        });;
       }
+    },
+    pullDownRefreshDispatch(category, alpha) {
+      this.$store.commit("Singers/changePullDownLoading", true);
+      this.$store.commit("Singers/changeListOffset", 0);
+      this.pullDownLoading = this.$store.getters["Singers/pullDownLoading"];
+      if (category === "" && alpha === "") {
+        this.$store.dispatch("Singers/getHotSingerList").then(res => {
+          this.singerList = res;
+          this.pullDownLoading = this.$store.getters["Singers/pullDownLoading"];
+        });
+      } else {
+        let reqData = {
+          category: this.category,
+          alpha: this.alpha
+        };
+        this.$store.dispatch("Singers/getSingerList", reqData).then(res => {
+          this.singerList = res;
+        });
+      }
+    },
+    handlePullUp() {
+      this.pullUpRefreshDispatch(
+        this.category,
+        this.alpha,
+        this.category === "",
+        this.$store.getters["Singers/ListOffset"]
+      );
+    },
+    handlePullDown() {
+      console.log(this.category, this.alpha);
+      this.pullDownRefreshDispatch(this.category, this.alpha);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

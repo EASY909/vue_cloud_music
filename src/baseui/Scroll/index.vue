@@ -2,6 +2,9 @@
 <template>
   <div ref="wrapper" class="ScrollContainer">
     <slot></slot>
+
+    <Loading v-if="pullUpLoading" />
+    <LoadingV2 v-if="pullDownLoading" />
   </div>
 </template>
 
@@ -9,14 +12,28 @@
 //这里可以导入其他文件（比如：组件，工具js，第三方插件js，json文件，图片文件等等）
 //例如：import 《组件名称》 from '《组件路径》';
 import BScroll from "better-scroll";
-
+import Loading from "@b/Loading";
+import LoadingV2 from "@b/LoadingV2";
+import { debounce } from "@/utils/index.js";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Scroll",
+  components: {
+    Loading,
+    LoadingV2
+  },
   props: {
     scrollconfig: {
       type: Object,
       default: () => {}
+    },
+    pullUpLoading: {
+      type: Boolean,
+      default: false
+    },
+    pullDownLoading: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -27,28 +44,36 @@ export default {
         click: true,
         refresh: true,
         onScroll: true,
-        pullUp: true,
+        pullUp: false,
         pullDown: false,
-        pullUpLoading: false,
-        pullDownLoading: false,
-        bounceTop: true,
-        bounceBottom: true
+        // pullUpLoading: false,
+        // pullDownLoading: false,
+        bounceTop: false,
+        bounceBottom: false
       }
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    pullUpLoading(nv, ov) {
+      console.log(nv);
+      this.pullUpLoading = nv;
+    },
+    pullDownLoading(nv, ov) {
+      this.pullDownLoading = nv;
+    }
+  },
   //方法集合
   methods: {
     _initScroll() {
       if (!this.$refs.wrapper) {
         return;
       }
-   
+
       for (const key in this.scrollconfig) {
-        this.scrollConfig[key]=this.scrollconfig[key]
+        this.scrollConfig[key] = this.scrollconfig[key];
       }
       // better-scroll的初始化
       this.scroll = new BScroll(this.$refs.wrapper, {
@@ -73,17 +98,17 @@ export default {
         this.scroll.on("scrollEnd", () => {
           // 滚动到底部
           if (this.scroll.y <= this.scroll.maxScrollY + 100) {
-            this.$emit("pullUp");
+            this.handlePullUp();
           }
         });
       }
 
       // 是否派发顶部下拉事件，用于下拉刷新
       if (this.scrollConfig.pullDown) {
-        this.scroll.on("touchend", pos => {
+        this.scroll.on("touchEnd", pos => {
           // 下拉动作
           if (pos.y > 50) {
-            this.$emit("pullDown");
+            this.handlePullDown();
           }
         });
       }
@@ -95,7 +120,13 @@ export default {
     scrollTo() {
       // 代理better-scroll的scrollTo方法
       this.scroll && this.scroll.scrollTo.apply(this.scroll, 0, 0);
-    }
+    },
+    handlePullDown: debounce(function() {
+      this.$emit("pullDown");
+    }, 300),
+    handlePullUp: debounce(function() {
+      this.$emit("pullUp");
+    }, 300)
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},

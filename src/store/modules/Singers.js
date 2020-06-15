@@ -4,14 +4,14 @@ const state = {
     enterLoading: true,
     pullUpLoading: false,
     pullDownLoading: false,
-    pageCount: 0
+    ListOffset: 0
 }
 const getters = {
     singerList: state => state.singerList,
     enterLoading: state => state.enterLoading,
     pullUpLoading: state => state.pullUpLoading,
     pullDownLoading: state => state.pullDownLoading,
-    pageCount: state => state.pageCount
+    ListOffset: state => state.ListOffset
 }
 
 const mutations = {
@@ -27,8 +27,8 @@ const mutations = {
     changePullDownLoading(state, value) {
         state.pullDownLoading = value;
     },
-    changePageCount(state, value) {
-        state.pageCount = value;
+    changeListOffset(state, value) {
+        state.ListOffset = value;
     }
 }
 const actions = {
@@ -40,6 +40,7 @@ const actions = {
                 commit("changeSingerList", data);
                 commit("changeEnterLoading", false);
                 commit("changePullDownLoading", false);
+                commit("changeListOffset", data.length);
                 resolve(data);
             }).catch(() => {
                 reject("热门歌手数据获取失败")
@@ -48,15 +49,15 @@ const actions = {
     },
     //加载更多热门歌手
     refreshMoreHotSingerList ({ commit ,getters}) {
-        const pageCount=getters.pageCount;
+        const ListOffset=getters.ListOffset;
         const singerList=getters.singerList;
         return new Promise((resolve, reject) => {
-            getHotSingerListRequest(pageCount).then(res  => {
+            getHotSingerListRequest(ListOffset).then(res  => {
                 const data = [...singerList, ...res.artists];
                 console.log(data);
-                console.log(res);
                 commit("changeSingerList", data);
-                commit("changePullDownLoading", false);
+                commit("changePullUpLoading", false);
+                commit("changeListOffset", data.length);
                 resolve(data);
             }).catch(() => {
                 reject("热门歌手数据获取失败")
@@ -73,6 +74,7 @@ const actions = {
                 commit("changeSingerList", data);
                 commit("changePullDownLoading", false);
                 commit("changeEnterLoading", false);
+                commit("changeListOffset", data.length);
                 resolve(data);
             }).catch(() => {
                 reject("歌手数据获取失败")
@@ -82,14 +84,15 @@ const actions = {
     //加载更多歌手
     refreshMoreSingerList ({ commit ,getters},reqData) {
         let {category, alpha}=reqData;
-        const pageCount=getters.pageCount;
+        const ListOffset=getters.ListOffset;
         const singerList=getters.singerList;
         return new Promise((resolve, reject) => {
 
-            getSingerListRequest(category, alpha, pageCount).then(res  => {
+            getSingerListRequest(category, alpha, ListOffset).then(res  => {
                 const data = [...singerList, ...res.artists];
                 commit("changeSingerList", data);
                 commit("changePullUpLoading", false);
+                commit("changeListOffset", data.length);
                 resolve(data);
             }).catch(() => {
                 reject("歌手数据获取失败")

@@ -9,7 +9,7 @@
      
       </div>
     </Scroll>
-    <Loading v-show="loading" />
+    <Loading v-if="loading" />
   </div>
 </template>
 

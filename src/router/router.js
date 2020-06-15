@@ -15,7 +15,7 @@ export default new Router({
           path: "/recommend",
           name: "Recommend",
           meta: {
-            keepAlive: true // 不需要缓存
+            keepAlive: true // 需要缓存
           },
           component: () => import("../views/Recommend")
         },
@@ -23,7 +23,7 @@ export default new Router({
           path: "/singers",
           name: "Singers",
           meta: {
-            keepAlive: false // 不需要缓存
+            keepAlive: true // 需要缓存
           },
           component: () => import("../views/Singers")
         },
@@ -31,7 +31,7 @@ export default new Router({
           path: "/rank",
           name: "Rank",
           meta: {
-            keepAlive: false // 不需要缓存
+            keepAlive: true // 不需要缓存
           },
           component: () => import("../views/Rank")
         },

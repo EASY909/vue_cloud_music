@@ -17,6 +17,7 @@
 
 <script>
 import Scroll from "../Scroll/index";
+
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "HorizenItem",
@@ -48,7 +49,7 @@ export default {
         bounceTop: true,
         bounceBottom: true
       },
-      ListItem: "ListItem",
+      ListItem: "ListItem"
     };
   },
   //监听属性 类似于data概念
@@ -60,12 +61,15 @@ export default {
     onScroll(pos) {
       //   console.log(pos);
     },
-    handleClick(val,event) {
+    handleClick(val, event) {
       // this.oldVal=val;
       this.$emit("handleClick", val);
-      console.log( event);
+
+      let nodes = event.target.parentNode.children;
+      [...nodes].forEach(item => {
+        item.classList.remove("selected");
+      });
       event.target.classList.add("selected");
-      event.target.previousElementSibling.classList.remove("selected");
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
