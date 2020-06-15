@@ -48,8 +48,8 @@ export default {
         pullDown: false,
         // pullUpLoading: false,
         // pullDownLoading: false,
-        bounceTop: false,
-        bounceBottom: false
+        bounceTop: true,
+        bounceBottom: true
       }
     };
   },
@@ -58,7 +58,6 @@ export default {
   //监控data中的数据变化
   watch: {
     pullUpLoading(nv, ov) {
-      console.log(nv);
       this.pullUpLoading = nv;
     },
     pullDownLoading(nv, ov) {
