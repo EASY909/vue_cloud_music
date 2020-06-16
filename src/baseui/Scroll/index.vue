@@ -34,6 +34,14 @@ export default {
     pullDownLoading: {
       type: Boolean,
       default: false
+    },
+    name: {
+      type: String,
+      default: ""
+    },
+    data: {
+      type: Array,
+      default: []
     }
   },
   data() {
@@ -46,8 +54,8 @@ export default {
         onScroll: true,
         pullUp: false,
         pullDown: false,
-        // pullUpLoading: false,
-        // pullDownLoading: false,
+        pullUpLoading: false,
+        pullDownLoading: false,
         bounceTop: true,
         bounceBottom: true
       }
@@ -62,11 +70,17 @@ export default {
     },
     pullDownLoading(nv, ov) {
       this.pullDownLoading = nv;
+    },
+    data() {
+      this.$nextTick(() => {
+        this.brefresh();
+      });
     }
   },
   //方法集合
   methods: {
     _initScroll() {
+      console.log(this.name);
       if (!this.$refs.wrapper) {
         return;
       }
@@ -75,6 +89,7 @@ export default {
         this.scrollConfig[key] = this.scrollconfig[key];
       }
       // better-scroll的初始化
+
       this.scroll = new BScroll(this.$refs.wrapper, {
         scrollX: this.scrollConfig.eventPassthrough === "horizental",
         scrollY: this.scrollConfig.eventPassthrough === "vertical",
@@ -88,6 +103,7 @@ export default {
 
       if (this.scrollConfig.onScroll) {
         this.scroll.on("scroll", pos => {
+          console.log(pos);
           this.$emit("onScroll", pos);
         });
       }
@@ -125,8 +141,9 @@ export default {
     }, 300),
     handlePullUp: debounce(function() {
       this.$emit("pullUp");
-    }, 300)
+    }, 300),
   },
+
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {},
   //生命周期 - 挂载完成（可以访问DOM元素）
@@ -139,13 +156,15 @@ export default {
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {
-    this.$nextTick(() => {
-      this._initScroll();
-    });
+
   }, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
-  activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
+  activated() {
+  },
+  deactivated() {
+  }
+  //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
 <style lang='scss' scoped>

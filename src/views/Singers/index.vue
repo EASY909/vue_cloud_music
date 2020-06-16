@@ -12,6 +12,8 @@
         :scrollconfig="scrollconfig"
         @pullUp="handlePullUp"
         @pullDown="handlePullDown"
+        name="Singers"
+        :data="data"
       >
         <div class="List">
           <div class="ListItem" v-for="(item,index) in singerList" :key="item.accountId+''+index">
@@ -58,7 +60,8 @@ export default {
       pullUpLoading: false,
       pullDownLoading: false,
       loading: true,
-      imgUrl: require("@/assets/music.png")
+      imgUrl: require("@/assets/music.png"),
+      data: []
     };
   },
   //监听属性 类似于data概念
@@ -84,6 +87,7 @@ export default {
       this.$store.dispatch("Singers/getHotSingerList").then(res => {
         this.singerList = res;
         this.loading = this.$store.getters["Singers/enterLoading"];
+        this.data=[...this.singerList]
       });
     },
     updateDispatch(category, alpha) {
@@ -95,6 +99,7 @@ export default {
       this.$store.commit("Singers/changeEnterLoading", true);
       this.$store.dispatch("Singers/getSingerList", reqData).then(res => {
         this.singerList = res;
+        this.data = [...this.singerList];
       });
     },
     // 滑到最底部刷新部分的处理
@@ -107,16 +112,20 @@ export default {
         this.$store.dispatch("Singers/refreshMoreHotSingerList").then(res => {
           this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
           this.singerList = res;
+          this.data = [...this.singerList];
         });
       } else {
         let reqData = {
           category,
           alpha
         };
-        this.$store.dispatch("Singers/refreshMoreSingerList", reqData).then(res => {
-          this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
-          this.singerList = res;
-        });;
+        this.$store
+          .dispatch("Singers/refreshMoreSingerList", reqData)
+          .then(res => {
+            this.pullUpLoading = this.$store.getters["Singers/pullUpLoading"];
+            this.singerList = res;
+            this.data = [...this.singerList];
+          });
       }
     },
     pullDownRefreshDispatch(category, alpha) {
@@ -127,6 +136,7 @@ export default {
         this.$store.dispatch("Singers/getHotSingerList").then(res => {
           this.singerList = res;
           this.pullDownLoading = this.$store.getters["Singers/pullDownLoading"];
+          this.data = [...this.singerList];
         });
       } else {
         let reqData = {
@@ -135,6 +145,7 @@ export default {
         };
         this.$store.dispatch("Singers/getSingerList", reqData).then(res => {
           this.singerList = res;
+          this.data = [...this.singerList];
         });
       }
     },

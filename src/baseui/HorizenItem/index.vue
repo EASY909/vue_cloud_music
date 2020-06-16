@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <Scroll :scrollconfig="scrollconfig" @onScroll="onScroll">
+  <Scroll :scrollconfig="scrollconfig" name="HorizenItem" :data="data">
     <div ref="Category">
       <div class="List">
         <span>{{title}}</span>
@@ -39,17 +39,10 @@ export default {
     return {
       scrollconfig: {
         eventPassthrough: "horizental",
-        click: true,
-        refresh: true,
-        onScroll: true,
-        pullUp: true,
-        pullDown: false,
-        pullUpLoading: false,
-        pullDownLoading: false,
-        bounceTop: true,
-        bounceBottom: true
+        click: true
       },
-      ListItem: "ListItem"
+      ListItem: "ListItem",
+      data:[]
     };
   },
   //监听属性 类似于data概念
@@ -58,9 +51,6 @@ export default {
   watch: {},
   //方法集合
   methods: {
-    onScroll(pos) {
-      //   console.log(pos);
-    },
     handleClick(val, event) {
       // this.oldVal=val;
       this.$emit("handleClick", val);

@@ -1,15 +1,18 @@
 <!--  -->
 <template>
   <div class="content">
-    <Scroll @onScroll="onScroll" :scrollconfig="scrollconfig">
+    <Scroll :scrollconfig="scrollconfig" name="recommend" :data="data">
       <div>
         <Slider :bannerList="bannerList" />
-     
-          <RecommendList :recommendList="recommendList" />
-     
+        <RecommendList :recommendList="recommendList" />
       </div>
     </Scroll>
     <Loading v-if="loading" />
+
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 
@@ -42,7 +45,8 @@ export default {
         bounceTop: true,
         bounceBottom: true
       },
-      loading: true
+      loading: true,
+      data: []
     };
   },
   //监听属性 类似于data概念
@@ -50,11 +54,7 @@ export default {
   //监控data中的数据变化
   watch: {},
   //方法集合
-  methods: {
-    onScroll(pos) {
-      console.log(pos);
-    }
-  },
+  methods: {},
   //生命周期 - 创建完成（可以访问当前this实例）
   created() {
     if (!this.bannerList.length) {
@@ -62,6 +62,7 @@ export default {
         .dispatch("Recommend/getBannerList")
         .then(res => {
           this.bannerList = res;
+          this.data = [...this.bannerList, ...this.recommendList];
         })
         .catch(error => {
           console.log(error);
@@ -75,6 +76,7 @@ export default {
           this.recommendList = res;
           this.$store.commit("Recommend/changeEnterLoading", false);
           this.loading = this.$store.getters["Recommend/enterLoading"];
+          this.data = [...this.bannerList, ...this.recommendList];
         })
         .catch(error => {
           console.log(error);

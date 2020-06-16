@@ -3,7 +3,7 @@
   <div class="ListWrapper">
     <h1 class="title">推荐歌单</h1>
     <div class="List">
-      <div class="ListItem" v-for="item in recommendList" :key="item.id">
+      <div class="ListItem" v-for="item in recommendList" :key="item.id" @click.stop="enterDetail(item.id)">
         <div class="img_wrapper">
           <div class="decorate"></div>
           <!-- <img v-lazy="item.picUrl + `?param=300x300`" /> -->
@@ -25,7 +25,7 @@
 import { getCount } from "@/utils";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  name:"",
+  name:"RecommendList",
   props: {
     recommendList: {
       type: Array,
@@ -46,6 +46,11 @@ export default {
   methods: {
     mygetCount(count) {
       return getCount(count);
+    },
+    enterDetail(id){
+      this.$router.push({
+        path:`/recommend/${id}`
+      })
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

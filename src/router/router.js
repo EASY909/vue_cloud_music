@@ -17,7 +17,17 @@ export default new Router({
           meta: {
             keepAlive: true // 需要缓存
           },
-          component: () => import("../views/Recommend")
+          component: () => import("../views/Recommend"),
+          children: [
+            {
+              path: "/recommend/:id",
+              name: "Album",
+              meta: {
+                keepAlive: true // 需要缓存
+              },
+              component: () => import("../views/Album")
+            }
+          ]
         },
         {
           path: "/singers",

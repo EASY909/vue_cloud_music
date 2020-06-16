@@ -1,8 +1,8 @@
 <!--  -->
 <template>
   <div class="Container">
-    <Scroll>
-      <div v-if="rankList.length!==0">
+    <Scroll :scrollconfig="scrollconfig" name="Rank" :data="data">
+      <div>
         <h1 class="offical">官方榜</h1>
         <!-- <h1 class="offical" :style="displayStyle"> 官方榜 </h1> -->
         <ul class="List">
@@ -31,7 +31,6 @@
             </div>
           </li>
         </ul>
-        
       </div>
       <Loading v-if="loading" />
     </Scroll>
@@ -53,8 +52,15 @@ export default {
       displayStyle: true,
       officialList: [],
       globalList: [],
-      rankList:[],
-      loading: true
+      rankList: [],
+      loading: true,
+      scrollconfig: {
+        pullUp: false,
+        pullDown: false
+        // pullUpLoading: true,
+        // pullDownLoading: true
+      },
+      data:[]
     };
   },
   //监听属性 类似于data概念
@@ -66,6 +72,7 @@ export default {
     getRankListDataDispatch() {
       this.$store.dispatch("Rank/getRankList").then(res => {
         this.rankList = res;
+        this.data=[...this.rankList]
         this.loading = this.$store.getters["Rank/loading"];
 
         let globalStartIndex = filterIndex(res);
