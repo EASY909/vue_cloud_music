@@ -1,12 +1,16 @@
 <!--  -->
 <template>
-  <transition name="slide-fade">
+  <transition name="slide-fade" v-if="currentAlbum">
     <div class="Container">
-      <Header title="返回" />
-      <Scroll :scrollconfig="scrollconfig" name="Album" :data="data">
+      <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
+      <Scroll :scrollconfig="scrollconfig" name="Album" @onScroll="handleScroll" :data="data">
         <div>
           <div class="TopDesc">
-            <div class="background" :style="{background:backgroundImg}" ref="TopDesc">
+            <div
+              class="background"
+              :style="{background:backgroundImg,backgroundSize:'100% 100%'}"
+              ref="TopDesc"
+            >
               <div class="filter"></div>
             </div>
 
@@ -50,14 +54,14 @@
           <div class="SongList">
             <div class="first_line">
               <div class="play_all">
-                <i class="iconfont">&#xe6e3;</i>
+                <i class="iconfont">&#xe695;</i>
                 <span>
                   播放全部
                   <span class="sum">(共 {{currentAlbum.tracks.length}} 首)</span>
                 </span>
               </div>
               <div class="add_list">
-                <i class="iconfont">&#xe62d;</i>
+                <i class="iconfont">&#xe6dc;</i>
                 <span>收藏 ({{getCount(currentAlbum.subscribedCount)}})</span>
               </div>
             </div>
@@ -73,6 +77,7 @@
             </ul>
           </div>
         </div>
+        <Loading v-if="loading" />
       </Scroll>
     </div>
   </transition>
@@ -81,11 +86,12 @@
 <script>
 import Header from "@b/Header";
 import Scroll from "@b/Scroll";
+import Loading from "@b/Loading";
 import { getCount, getName } from "@/utils";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Album",
-  components: { Header, Scroll },
+  components: { Header, Scroll, Loading },
 
   data() {
     //这里存放数据
@@ -94,90 +100,12 @@ export default {
       scrollconfig: {
         bounceTop: false
       },
-      currentAlbum: {
-        creator: {
-          avatarUrl:
-            "http://p1.music.126.net/O9zV6jeawR43pfiK2JaVSw==/109951164232128905.jpg",
-          nickname: "浪里推舟"
-        },
-        coverImgUrl:
-          "http://p2.music.126.net/ecpXnH13-0QWpWQmqlR0gw==/109951164354856816.jpg",
-        subscribedCount: 2010711,
-        name: "听完就睡，耳机是天黑以后柔软的梦境",
-        tracks: [
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          },
-          {
-            name: "我真的受伤了",
-            ar: [{ name: "张学友" }, { name: "周华健" }],
-            al: {
-              name: "学友 热"
-            }
-          }
-        ]
-      },
-      backgroundImg: ""
+      currentAlbum: null,
+      backgroundImg: "",
+      isMarquee: false,
+      title: "返回",
+      loading: true,
+      id: this.$route.params.id
     };
   },
   //监听属性 类似于data概念
@@ -191,23 +119,47 @@ export default {
     },
     getName(name) {
       return getName(name);
+    },
+    handleScroll(pos) {
+      let minScrollY = -45;
+      let percent = Math.abs(pos.y / minScrollY);
+      let headerDom = this.$refs.headerEl.$el;
+      if (pos.y < minScrollY) {
+        headerDom.style.backgroundColor = "#d44439";
+        headerDom.style.opacity = Math.min(1, (percent - 1) / 2);
+        this.title = this.currentAlbum.name;
+        this.isMarquee = true;
+      } else {
+        headerDom.style.backgroundColor = "";
+        headerDom.style.opacity = 1;
+        this.title = "返回";
+        this.isMarquee = false;
+      }
+    },
+    getAlbumDataDispatch() {
+      this.$store.dispatch("Album/getAlbumDetailRequest", this.id).then(res => {
+        this.currentAlbum = res;
+        this.backgroundImg = `url(${this.currentAlbum.coverImgUrl}) no-repeat center`;
+        this.loading = this.$store.getters["Album/enterLoading"];
+        this.data = [this.currentAlbum];
+      });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {
-    // console.log(this.$route.params);
-    this.backgroundImg = `url(${this.currentAlbum.coverImgUrl}) no-repeat`;
-    console.log(this.backgroundImg);
-  },
+  mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   created() {},
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {}, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
-  activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
+  activated() {
+    this.id = this.$route.params.id;
+    this.getAlbumDataDispatch();
+    this.title="返回";
+  }, //如果页面有keep-alive缓存功能，这个函数会触发
   deactivated() {}
 };
 </script>
@@ -241,7 +193,7 @@ export default {
       position: absolute;
       width: 100%;
       height: 100%;
-      filter: blur (20px);
+      filter: blur(8px);
       .filter {
         position: absolute;
         z-index: 10;
@@ -324,7 +276,7 @@ export default {
     justify-content: space-between;
     box-sizing: border-box;
     padding: 0 30px 20px 30px;
-    margin: -100px 0 0 0;
+    margin: -100px 0 -10px 0;
     > div {
       display: flex;
       flex-direction: column;
@@ -343,7 +295,7 @@ export default {
   .SongList {
     border-radius: 10px;
     opacity: 0.98;
-    // ${props => props.showBackground ? `background: ${style ["highlight-background-color"]}`: ""}
+    background: $highlightBackgroundColor;
     .first_line {
       box-sizing: border-box;
       padding: 10px 0;

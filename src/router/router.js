@@ -43,7 +43,17 @@ export default new Router({
           meta: {
             keepAlive: true // 不需要缓存
           },
-          component: () => import("../views/Rank")
+          component: () => import("../views/Rank"),
+          children: [
+            {
+              path: "/rank/:id",
+              name: "Album",
+              meta: {
+                keepAlive: true // 需要缓存
+              },
+              component: () => import("../views/Album")
+            }
+          ]
         },
       ]
     },

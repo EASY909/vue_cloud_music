@@ -2,7 +2,10 @@
 <template>
   <div class="HeaderContainer">
     <i class="iconfont back" @click="handleClick">&#xe503;</i>
-    <h1>{{title}}</h1>
+    <marquee v-if="my_isMarquee">
+      <h1>{{my_title}}</h1>
+    </marquee>
+    <h1 v-else>{{my_title}}</h1>
   </div>
 </template>
 
@@ -11,21 +14,37 @@ export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Header",
   props: {
-    title: String,
-    default: "标题"
+    title: {
+      type: String,
+      default: "返回"
+    },
+    isMarquee: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     //这里存放数据
-    return {};
+    return {
+      my_isMarquee: false,
+      my_title: "返回"
+    };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    isMarquee(nv, ov) {
+      this.my_isMarquee = nv;
+    },
+    title(nv, ov) {
+      this.my_title = nv;
+    }
+  },
   //方法集合
   methods: {
     handleClick() {
-        this.$router.go(-1);
+      this.$router.go(-1);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

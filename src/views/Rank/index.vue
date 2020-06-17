@@ -6,7 +6,12 @@
         <h1 class="offical">官方榜</h1>
         <!-- <h1 class="offical" :style="displayStyle"> 官方榜 </h1> -->
         <ul class="List">
-          <li class="ListItem" v-for="item in officialList" :key="item.id">
+          <li
+            class="ListItem"
+            v-for="item in officialList"
+            :key="item.id"
+            @click.stop="enterDetail(item.id)"
+          >
             <div class="img_wrapper">
               <img :src="item.coverImgUrl" alt />
               <div class="decorate"></div>
@@ -23,7 +28,12 @@
         </ul>
         <h1 class="global">全球榜</h1>
         <ul class="List">
-          <li class="ListItem" v-for="item in globalList" :key="item.id">
+          <li
+            class="ListItem"
+            v-for="item in globalList"
+            :key="item.id"
+            @click.stop="enterDetail(item.id)"
+          >
             <div class="img_wrapper img_wrappers">
               <img :src="item.coverImgUrl" alt />
               <div class="decorate"></div>
@@ -34,6 +44,11 @@
       </div>
       <Loading v-if="loading" />
     </Scroll>
+
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 
@@ -60,7 +75,7 @@ export default {
         // pullUpLoading: true,
         // pullDownLoading: true
       },
-      data:[]
+      data: []
     };
   },
   //监听属性 类似于data概念
@@ -72,12 +87,17 @@ export default {
     getRankListDataDispatch() {
       this.$store.dispatch("Rank/getRankList").then(res => {
         this.rankList = res;
-        this.data=[...this.rankList]
+        this.data = [...this.rankList];
         this.loading = this.$store.getters["Rank/loading"];
 
         let globalStartIndex = filterIndex(res);
         this.officialList = res.slice(0, globalStartIndex);
         this.globalList = res.slice(globalStartIndex);
+      });
+    },
+    enterDetail(id) {
+      this.$router.push({
+        path: `/rank/${id}`
       });
     }
   },
