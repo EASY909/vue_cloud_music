@@ -118,7 +118,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-@import "../../styles/config.scss";
+// @import "../../styles/config.scss";
 .Container {
   position: fixed;
   top: 90px;

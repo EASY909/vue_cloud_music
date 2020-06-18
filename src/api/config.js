@@ -169,7 +169,7 @@ export const alphaTypes = [{
 ];
 
 export const HEADER_HEIGHT = 45;
-
+export const OFFSET=5;
 // 播放模式
 export const playMode = {
   sequence: 0,

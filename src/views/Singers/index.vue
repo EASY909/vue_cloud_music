@@ -16,7 +16,12 @@
         :data="data"
       >
         <div class="List">
-          <div class="ListItem" v-for="(item,index) in singerList" :key="item.accountId+''+index">
+          <div
+            class="ListItem"
+            v-for="(item,index) in singerList"
+            :key="item.accountId+''+index"
+            @click.stop="enterDetail(item.id)"
+          >
             <!-- <div v-lazy-container="{ selector: 'img', loading: imgUrl }">
               <img :data-src="item.picUrl+ `?param=300x300`" width="100%" height="100%" alt="music" />
             </div>-->
@@ -29,6 +34,11 @@
       </Scroll>
       <Loading v-show="loading" />
     </div>
+
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 
@@ -87,7 +97,7 @@ export default {
       this.$store.dispatch("Singers/getHotSingerList").then(res => {
         this.singerList = res;
         this.loading = this.$store.getters["Singers/enterLoading"];
-        this.data=[...this.singerList]
+        this.data = [...this.singerList];
       });
     },
     updateDispatch(category, alpha) {
@@ -158,8 +168,12 @@ export default {
       );
     },
     handlePullDown() {
-      console.log(this.category, this.alpha);
       this.pullDownRefreshDispatch(this.category, this.alpha);
+    },
+    enterDetail(id) {
+      this.$router.push({
+        path: `/singers/${id}`
+      });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -179,7 +193,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-@import "../../styles/config.scss";
+// @import "../../styles/config.scss";
 
 .NavContainer {
   box-sizing: border-box;

@@ -1,7 +1,7 @@
 <!--  -->
 <template>
-  <transition name="slide-fade" v-if="currentAlbum">
-    <div class="Container">
+  <transition name="slide-fade">
+    <div class="Container" v-if="currentAlbum">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
       <Scroll :scrollconfig="scrollconfig" name="Album" @onScroll="handleScroll" :data="data">
         <div>
@@ -51,7 +51,7 @@
             </div>
           </div>
 
-          <div class="SongList">
+          <!-- <div class="SongList">
             <div class="first_line">
               <div class="play_all">
                 <i class="iconfont">&#xe695;</i>
@@ -75,23 +75,27 @@
                 </div>
               </li>
             </ul>
-          </div>
+          </div> -->
+          <SongsList :song="artist"></SongsList>
         </div>
-        <Loading v-if="loading" />
       </Scroll>
+       <Loading v-if="loading"/>
     </div>
+    
   </transition>
+  
 </template>
 
 <script>
 import Header from "@b/Header";
 import Scroll from "@b/Scroll";
 import Loading from "@b/Loading";
+import SongsList from "@/views/SongList";
 import { getCount, getName } from "@/utils";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Album",
-  components: { Header, Scroll, Loading },
+  components: { Header, Scroll, Loading,SongsList },
 
   data() {
     //这里存放数据
@@ -105,7 +109,8 @@ export default {
       isMarquee: false,
       title: "返回",
       loading: true,
-      id: this.$route.params.id
+      id: this.$route.params.id,
+      artist:[]
     };
   },
   //监听属性 类似于data概念
@@ -142,6 +147,7 @@ export default {
         this.backgroundImg = `url(${this.currentAlbum.coverImgUrl}) no-repeat center`;
         this.loading = this.$store.getters["Album/enterLoading"];
         this.data = [this.currentAlbum];
+        this.artist=res.tracks;
       });
     }
   },
@@ -158,7 +164,7 @@ export default {
   activated() {
     this.id = this.$route.params.id;
     this.getAlbumDataDispatch();
-    this.title="返回";
+    this.title = "返回";
   }, //如果页面有keep-alive缓存功能，这个函数会触发
   deactivated() {}
 };

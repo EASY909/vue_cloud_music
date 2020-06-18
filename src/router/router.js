@@ -21,7 +21,7 @@ export default new Router({
           children: [
             {
               path: "/recommend/:id",
-              name: "Album",
+              name: "recommendAlbum",
               meta: {
                 keepAlive: true // 需要缓存
               },
@@ -35,7 +35,17 @@ export default new Router({
           meta: {
             keepAlive: true // 需要缓存
           },
-          component: () => import("../views/Singers")
+          component: () => import("../views/Singers"),
+          children: [
+            {
+              path: "/singers/:id",
+              name: "Singer",
+              meta: {
+                keepAlive: true // 需要缓存
+              },
+              component: () => import("../views/Singer")
+            }
+          ]
         },
         {
           path: "/rank",
@@ -47,7 +57,7 @@ export default new Router({
           children: [
             {
               path: "/rank/:id",
-              name: "Album",
+              name: "rankAlbum",
               meta: {
                 keepAlive: true // 需要缓存
               },
