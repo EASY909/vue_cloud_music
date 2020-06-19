@@ -26,19 +26,22 @@
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
     <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <Player></Player>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-
+import Player from "@/views/Player";
 export default {
   name: "home",
-  components: {}
+  components: {
+    Player
+  }
 };
 </script>
 <style lang="scss" scoped>
-@import "../styles/config.scss";
+// @import "../styles/config.scss";
 .top {
   display: flex;
   flex-direction: row;

@@ -13,11 +13,11 @@
         <!-- <div class="add_list">
           <i class="iconfont">&#xe6dc;</i>
           <span>收藏 ({{getCount(currentAlbum.subscribedCount)}})</span>
-        </div> -->
+        </div>-->
       </div>
 
       <ul class="SongItem">
-        <li :key="index" v-for="(item,index) in mysong">
+        <li :key="index" v-for="(item,index) in mysong" @click="toggleFullScreen(false)">
           <span class="index">{{index + 1}}</span>
           <div class="info">
             <span>{{item.name}}</span>
@@ -30,35 +30,39 @@
 </template>
 
 <script>
-import {getName} from "@/utils";
+import { getName } from "@/utils";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "SongList",
   props: {
     song: {
-        type:Array,
-        default:[]
+      type: Array,
+      default: []
     }
   },
   data() {
     //这里存放数据
     return {
-        mysong:[]
+      mysong: []
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
   watch: {
-      song(nv,ov){
-          this.mysong=nv;
-      }
+    song(nv, ov) {
+      this.mysong = nv;
+    }
   },
   //方法集合
   methods: {
-      getName(name){
-          return getName(name)
-      }
+    getName(name) {
+      return getName(name);
+    },
+    toggleFullScreen(value) {
+      console.log("显示小的");
+      this.$store.commit("Player/changeFullScreen", value);
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeMount() {}, //生命周期 - 挂载之前
@@ -66,7 +70,7 @@ export default {
   mounted() {},
   beforeCreate() {}, //生命周期 - 创建之前
   created() {
-      this.mysong=this.song;
+    this.mysong = this.song;
   },
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {}, //生命周期 - 更新之后

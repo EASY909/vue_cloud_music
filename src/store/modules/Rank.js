@@ -24,7 +24,6 @@ const actions = {
                 let list = data && data.list;
                 commit("changeRankList",list);
                 commit("changeLoading",false);
-                console.log(list);
                 resolve(list);
 
             }).catch(() => {

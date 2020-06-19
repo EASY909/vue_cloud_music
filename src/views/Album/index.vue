@@ -13,7 +13,6 @@
             >
               <div class="filter"></div>
             </div>
-
             <div class="img_wrapper">
               <div class="decorate"></div>
               <img :src="currentAlbum.coverImgUrl" alt />
@@ -50,32 +49,6 @@
               更多
             </div>
           </div>
-
-          <!-- <div class="SongList">
-            <div class="first_line">
-              <div class="play_all">
-                <i class="iconfont">&#xe695;</i>
-                <span>
-                  播放全部
-                  <span class="sum">(共 {{currentAlbum.tracks.length}} 首)</span>
-                </span>
-              </div>
-              <div class="add_list">
-                <i class="iconfont">&#xe6dc;</i>
-                <span>收藏 ({{getCount(currentAlbum.subscribedCount)}})</span>
-              </div>
-            </div>
-
-            <ul class="SongItem">
-              <li :key="index" v-for="(item,index) in currentAlbum.tracks">
-                <span class="index">{{index + 1}}</span>
-                <div class="info">
-                  <span>{{item.name}}</span>
-                  <span>{{ getName(item.ar)}} - {{item.al.name}}</span>
-                </div>
-              </li>
-            </ul>
-          </div> -->
           <SongsList :song="artist"></SongsList>
         </div>
       </Scroll>
