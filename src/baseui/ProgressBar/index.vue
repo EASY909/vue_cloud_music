@@ -60,15 +60,13 @@ export default {
       if (!this.touch.initiated) return;
       // 滑动距离
       const deltaX = e.touches[0].pageX - this.touch.startX;
-
       const barWidth =
         this.$refs.progressBar.clientWidth - this.progressBtnWidth;
-
-      const offsetWidth = Math.max(0, this.touch.left + deltaX);
-      //   const offsetWidth = Math.min(
-      //     Math.max(0, this.touch.left + deltaX),
-      //     barWidth
-      //   );
+      // const offsetWidth = Math.max(0, this.touch.left + deltaX);
+      const offsetWidth = Math.min(
+        Math.max(0, this.touch.left + deltaX),
+        barWidth
+      );
       this.offset(offsetWidth);
     },
     progressTouchEnd(e) {
@@ -77,14 +75,11 @@ export default {
       this.touch = endTouch;
 
       this.changePercent();
-      //   console.log(e);
-      //   console.log(this.touch);
     },
     progressClick(e) {
       const rect = this.$refs.progressBar.getBoundingClientRect();
       const offsetWidth = e.pageX - rect.left;
       this.offset(offsetWidth);
-
       this.changePercent();
     },
 
@@ -93,11 +88,21 @@ export default {
         this.$refs.progressBar.clientWidth - this.progressBtnWidth;
       const curPercent = this.$refs.progress.clientWidth / barWidth; // 新的进度计算
       this.percentChange(curPercent); // 把新的进度传给回调函数并执行
-    },
+    }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeCreate() {}, //生命周期 - 创建之前
-  watch: {},
+  watch: {
+    percent(nv) {
+      if (nv >= 0 && nv <= 1 && !this.touch.initiated) {
+        const barWidth =
+          this.$refs.progressBar.clientWidth - this.progressBtnWidth;
+        const offsetWidth = nv * barWidth;
+        this.$refs.progress.style.width = `${offsetWidth}px`;
+        this.$refs.progressBtn.style.transform = `translate3d(${offsetWidth}px, 0, 0)`;
+      }
+    }
+  },
   created() {},
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）

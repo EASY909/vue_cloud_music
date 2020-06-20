@@ -17,30 +17,51 @@
       <div class="Middle">
         <div class="CDWrapper">
           <div class="cd">
-            <img class="image play" :src="song.al.picUrl + '?param=400x400'" alt />
+            <img
+              :class="`image play ${playing ? '': 'pause'}`"
+              :src="song.al.picUrl + '?param=400x400'"
+              alt
+            />
           </div>
         </div>
       </div>
       <div class="Bottom">
         <div class="ProgressWrapper">
-          <span class="time time-l">0:00</span>
+          <span class="time time-l">{{formatPlayTime(currentTime)}}</span>
           <div class="progress-bar-wrapper">
             <ProgressBar :percent="percent" :percentChange="onProgressChange"></ProgressBar>
           </div>
-          <div class="time time-r">4:17</div>
+          <div class="time time-r">{{formatPlayTime(duration)}}</div>
         </div>
 
         <div class="Operators">
-          <div class="icon i-left">
-            <i class="iconfont">&#xe579;</i>
+          <div class="icon i-left" @click="onChangeMode">
+              <i
+              v-if="mode===playmode.sequence"
+              class="iconfont"
+            >&#xe625;</i>
+            <i
+              v-else-if="mode===playmode.loop"
+              class="iconfont"
+            >&#xe614;</i>
+            <i v-else class="iconfont">&#xe670;</i>
           </div>
-          <div class="icon i-left">
+          <div class="icon i-left" @click="handlePrev">
             <i class="iconfont">&#xe502;</i>
           </div>
           <div class="icon i-center">
-            <i class="iconfont">&#xe579;</i>
+            <i
+              v-if="playing"
+              @click="e=>clickPlaying(e, false)"
+              class="icon-mini iconfont icon-pause"
+            >&#xe66e;</i>
+            <i
+              v-else
+              @click="e=>clickPlaying(e, true)"
+              class="icon-mini iconfont icon-play"
+            >&#xe60e;</i>
           </div>
-          <div class="icon i-right">
+          <div class="icon i-right" @click="handleNext">
             <i class="iconfont">&#xe579;</i>
           </div>
           <div class="icon i-right">
@@ -53,7 +74,8 @@
 </template>
 
 <script>
-import { getName } from "@/utils";
+import { getName, formatPlayTime } from "@/utils";
+import {playMode} from "@/api/config"
 import ProgressBar from "@b/ProgressBar";
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -62,6 +84,34 @@ export default {
     song: {
       type: Object,
       default: {}
+    },
+    duration: {
+      type: Number,
+      default: 0
+    },
+    currentTime: {
+      type: Number,
+      default: 0
+    },
+    percent: {
+      type: Number,
+      default: 0
+    },
+    ProgressChange: {
+      type: Function,
+      default: null
+    },
+    handlePrev: {
+      type: Function,
+      default: null
+    },
+    handleNext: {
+      type: Function,
+      default: null
+    },
+    changeMode:{
+      type: Function,
+      default: null
     }
     // fullScreen:{
     //     type:Boolean,
@@ -73,7 +123,10 @@ export default {
     return {
       mysong: null,
       fullScreen: false,
-      percent: 0.5
+      playing: false,
+      mycurrentTime: 0,
+      mode:this.$store.state.Player.mode,
+      playmode:playMode
     };
   },
   //监听属性 类似于data概念
@@ -87,8 +140,18 @@ export default {
     toggleFullScreen(value) {
       this.$store.commit("Player/changeFullScreen", value);
     },
-    onProgressChange(val) {
-        console.log(val);
+    onProgressChange(curPercent) {
+      this.ProgressChange(curPercent);
+    },
+    clickPlaying(e, state) {
+      e.stopPropagation();
+      this.$store.commit("Player/changePlayingState", state);
+    },
+    formatPlayTime(time) {
+      return formatPlayTime(time);
+    },
+    onChangeMode(){
+      this.changeMode()
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -96,6 +159,12 @@ export default {
   watch: {
     "$store.state.Player.fullScreen": function(nv) {
       this.fullScreen = nv;
+    },
+    "$store.state.Player.playing": function(nv) {
+      this.playing = nv;
+    },
+    percent(nv) {
+      // console.log(nv);
     }
   },
   created() {

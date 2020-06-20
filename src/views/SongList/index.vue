@@ -3,7 +3,7 @@
   <div>
     <div class="SongList">
       <div class="first_line">
-        <div class="play_all">
+        <div class="play_all" @click="selectItem(0)">
           <i class="iconfont">&#xe695;</i>
           <span>
             播放全部
@@ -17,7 +17,7 @@
       </div>
 
       <ul class="SongItem">
-        <li :key="index" v-for="(item,index) in mysong" @click="toggleFullScreen(false)">
+        <li :key="index" v-for="(item,index) in mysong">
           <span class="index">{{index + 1}}</span>
           <div class="info">
             <span>{{item.name}}</span>
@@ -60,8 +60,19 @@ export default {
       return getName(name);
     },
     toggleFullScreen(value) {
-      console.log("显示小的");
+      //   changePlayListDispatch(songs);
+      //   changeSequecePlayListDispatch(songs);
+      //   changeCurrentIndexDispatch(index);
+      // console.log("显示小的");
       this.$store.commit("Player/changeFullScreen", value);
+      this.$store.commit("Player/changeFullScreen", value);
+      this.$store.commit("Player/changeFullScreen", value);
+    },
+    selectItem(index) {
+      console.log(this.mysong);
+      this.$store.commit("Player/changePlayList", this.mysong);
+      this.$store.commit("Player/changeSequecePlayList", this.mysong);
+      this.$store.commit("Player/changeCurrentIndex", index);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

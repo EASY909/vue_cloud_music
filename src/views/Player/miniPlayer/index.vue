@@ -4,7 +4,13 @@
     <div class="MiniPlayerContainer" @click="toggleFullScreen(true)">
       <div class="icon">
         <div class="imgWrapper">
-          <img class="play" :src="song.al.picUrl" width="40" height="40" alt="img" />
+          <img
+            :class="`play ${playing ? '': 'pause'}`"
+            :src="song.al.picUrl"
+            width="40"
+            height="40"
+            alt="img"
+          />
         </div>
       </div>
       <div class="text">
@@ -13,7 +19,12 @@
       </div>
       <div class="control">
         <ProgressCircle :radius="radius" :percent="percent">
-          <i class="icon-mini iconfont icon-pause">&#xe66e;</i>
+          <i
+            v-if="playing"
+            @click="e=>clickPlaying(e, false)"
+            class="icon-mini iconfont icon-pause"
+          >&#xe60e;</i>
+          <i v-else @click="e=>clickPlaying(e, true)" class="icon-mini iconfont icon-play">&#xe66e;</i>
         </ProgressCircle>
       </div>
       <div class="control">
@@ -34,14 +45,23 @@ export default {
     song: {
       type: Object,
       default: {}
+    },
+    currentTime: {
+      type: Number,
+      default: 0
+    },
+    percent: {
+      type: Number,
+      default: 0
     }
   },
   data() {
     //这里存放数据
     return {
-      fullScreen: true,
+      fullScreen: false,
       radius: 32,
-      percent: 0.2
+      // percent: 0,
+      playing: false
     };
   },
   //监听属性 类似于data概念
@@ -51,6 +71,15 @@ export default {
     "$store.state.Player.fullScreen": function(nv) {
       console.log(nv);
       this.fullScreen = !nv;
+    },
+    "$store.state.Player.playing": function(nv) {
+      this.playing = nv;
+    },
+    percent(nv) {
+      // console.log(nv);
+    },
+    currentTime(nv) {
+      // console.log(nv);
     }
   },
   //方法集合
@@ -60,13 +89,17 @@ export default {
     },
     toggleFullScreen(value) {
       this.$store.commit("Player/changeFullScreen", value);
+    },
+    clickPlaying(e, state) {
+      e.stopPropagation();
+      this.$store.commit("Player/changePlayingState", state);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {
-    console.log(11);
+    console.log("迷你组件");
   },
   beforeCreate() {}, //生命周期 - 创建之前
   created() {},
