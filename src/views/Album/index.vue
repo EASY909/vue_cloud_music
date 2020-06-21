@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <transition name="slide-fade">
-    <div class="Container" v-if="currentAlbum">
+    <div :class="['Container',{bottom:bottom}]" v-if="currentAlbum">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
       <Scroll :scrollconfig="scrollconfig" name="Album" @onScroll="handleScroll" :data="data">
         <div>
@@ -52,11 +52,9 @@
           <SongsList :song="artist"></SongsList>
         </div>
       </Scroll>
-       <Loading v-if="loading"/>
+      <Loading v-if="loading" />
     </div>
-    
   </transition>
-  
 </template>
 
 <script>
@@ -68,7 +66,7 @@ import { getCount, getName } from "@/utils";
 export default {
   //import引入的组件需要注入到对象中才能使用
   name: "Album",
-  components: { Header, Scroll, Loading,SongsList },
+  components: { Header, Scroll, Loading, SongsList },
 
   data() {
     //这里存放数据
@@ -83,13 +81,22 @@ export default {
       title: "返回",
       loading: true,
       id: this.$route.params.id,
-      artist:[]
+      artist: [],
+      bottom: true
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    "$store.state.Player.playList": {
+      handler: function(nv) {
+        console.log(nv.length);
+        nv.length !== 0 ? (this.bottom = true) : (this.bottom = false);
+      },
+      immediate: true
+    }
+  },
   //方法集合
   methods: {
     getCount(count) {
@@ -120,18 +127,20 @@ export default {
         this.backgroundImg = `url(${this.currentAlbum.coverImgUrl}) no-repeat center`;
         this.loading = this.$store.getters["Album/enterLoading"];
         this.data = [this.currentAlbum];
-        this.artist=res.tracks;
+        this.artist = res.tracks;
       });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+  },
   beforeCreate() {}, //生命周期 - 创建之前
   created() {},
   beforeUpdate() {}, //生命周期 - 更新之前
-  updated() {}, //生命周期 - 更新之后
+  updated() {
+  }, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {
@@ -144,6 +153,9 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
+.bottom {
+  bottom: 60px !important;
+}
 .Container {
   position: fixed;
   top: 0;

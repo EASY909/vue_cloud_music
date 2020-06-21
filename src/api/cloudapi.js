@@ -45,3 +45,7 @@ export const getResultSongsListRequest = query => {
 export const getSongDetailRequest = id => {
     return axiosInstance.get(`/song/detail?ids=${id}`);
 };
+
+export const check = id => {
+    return axiosInstance.get(`/check/music?id=${id}`);
+};

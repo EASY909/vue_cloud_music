@@ -36,14 +36,8 @@
 
         <div class="Operators">
           <div class="icon i-left" @click="onChangeMode">
-              <i
-              v-if="mode===playmode.sequence"
-              class="iconfont"
-            >&#xe625;</i>
-            <i
-              v-else-if="mode===playmode.loop"
-              class="iconfont"
-            >&#xe614;</i>
+            <i v-if="mode===playmode.sequence" class="iconfont">&#xe625;</i>
+            <i v-else-if="mode===playmode.loop" class="iconfont">&#xe614;</i>
             <i v-else class="iconfont">&#xe670;</i>
           </div>
           <div class="icon i-left" @click="handlePrev">
@@ -54,17 +48,17 @@
               v-if="playing"
               @click="e=>clickPlaying(e, false)"
               class="icon-mini iconfont icon-pause"
-            >&#xe66e;</i>
+            >&#xe60e;</i>
             <i
               v-else
               @click="e=>clickPlaying(e, true)"
               class="icon-mini iconfont icon-play"
-            >&#xe60e;</i>
+            >&#xe66e;</i>
           </div>
           <div class="icon i-right" @click="handleNext">
             <i class="iconfont">&#xe579;</i>
           </div>
-          <div class="icon i-right">
+          <div class="icon i-right" @click="handleTogglePlayList">
             <i class="iconfont">&#xe691;</i>
           </div>
         </div>
@@ -75,7 +69,7 @@
 
 <script>
 import { getName, formatPlayTime } from "@/utils";
-import {playMode} from "@/api/config"
+import { playMode } from "@/api/config";
 import ProgressBar from "@b/ProgressBar";
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -109,7 +103,11 @@ export default {
       type: Function,
       default: null
     },
-    changeMode:{
+    changeMode: {
+      type: Function,
+      default: null
+    },
+    togglePlayList: {
       type: Function,
       default: null
     }
@@ -125,12 +123,15 @@ export default {
       fullScreen: false,
       playing: false,
       mycurrentTime: 0,
-      mode:this.$store.state.Player.mode,
-      playmode:playMode
+      playmode: playMode
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    mode() {
+      return this.$store.state.Player.mode;
+    }
+  },
   //监控data中的数据变化
   //方法集合
   methods: {
@@ -144,27 +145,41 @@ export default {
       this.ProgressChange(curPercent);
     },
     clickPlaying(e, state) {
+      console.log("全面屏暂停");
       e.stopPropagation();
       this.$store.commit("Player/changePlayingState", state);
     },
     formatPlayTime(time) {
       return formatPlayTime(time);
     },
-    onChangeMode(){
-      this.changeMode()
+    onChangeMode() {
+      this.changeMode();
+    },
+    handleTogglePlayList(e) {
+      e.stopPropagation();
+      this.$store.commit("Player/changeShowPlayList", true);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeCreate() {}, //生命周期 - 创建之前
   watch: {
-    "$store.state.Player.fullScreen": function(nv) {
-      this.fullScreen = nv;
+    "$store.state.Player.fullScreen": {
+      handler: function(nv) {
+        this.fullScreen = nv;
+      },
+      immediate: true
     },
-    "$store.state.Player.playing": function(nv) {
-      this.playing = nv;
+    "$store.state.Player.playing": {
+      handler: function(nv) {
+        this.playing = nv;
+      },
+      immediate: true
     },
     percent(nv) {
       // console.log(nv);
+    },
+    "$store.state.Player.mode": function(nv) {
+      console.log(nv);
     }
   },
   created() {

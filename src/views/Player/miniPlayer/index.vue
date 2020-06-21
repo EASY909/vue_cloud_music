@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <transition name="slide-fade" v-if="fullScreen">
+  <transition name="slide-fade" v-if="!fullScreen">
     <div class="MiniPlayerContainer" @click="toggleFullScreen(true)">
       <div class="icon">
         <div class="imgWrapper">
@@ -27,7 +27,7 @@
           <i v-else @click="e=>clickPlaying(e, true)" class="icon-mini iconfont icon-play">&#xe66e;</i>
         </ProgressCircle>
       </div>
-      <div class="control">
+      <div class="control" @click="handleTogglePlayList">
         <i class="iconfont">&#xe691;</i>
       </div>
     </div>
@@ -53,6 +53,10 @@ export default {
     percent: {
       type: Number,
       default: 0
+    },
+    togglePlayList: {
+      type: Function,
+      default: null
     }
   },
   data() {
@@ -68,12 +72,17 @@ export default {
   computed: {},
   //监控data中的数据变化
   watch: {
-    "$store.state.Player.fullScreen": function(nv) {
-      console.log(nv);
-      this.fullScreen = !nv;
+    "$store.state.Player.fullScreen": {
+      handler: function(nv) {
+        this.fullScreen = nv;
+      },
+      immediate: true
     },
-    "$store.state.Player.playing": function(nv) {
-      this.playing = nv;
+    "$store.state.Player.playing": {
+      handler: function(nv) {
+        this.playing = nv;
+      },
+      immediate: true
     },
     percent(nv) {
       // console.log(nv);
@@ -93,6 +102,10 @@ export default {
     clickPlaying(e, state) {
       e.stopPropagation();
       this.$store.commit("Player/changePlayingState", state);
+    },
+    handleTogglePlayList(e) {
+      e.stopPropagation();
+       this.$store.commit("Player/changeShowPlayList", true);
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

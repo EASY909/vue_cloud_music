@@ -17,7 +17,7 @@
       </div>
 
       <ul class="SongItem">
-        <li :key="index" v-for="(item,index) in mysong">
+        <li :key="index" v-for="(item,index) in mysong" @click="selectItem(index)">
           <span class="index">{{index + 1}}</span>
           <div class="info">
             <span>{{item.name}}</span>
@@ -69,7 +69,6 @@ export default {
       this.$store.commit("Player/changeFullScreen", value);
     },
     selectItem(index) {
-      console.log(this.mysong);
       this.$store.commit("Player/changePlayList", this.mysong);
       this.$store.commit("Player/changeSequecePlayList", this.mysong);
       this.$store.commit("Player/changeCurrentIndex", index);

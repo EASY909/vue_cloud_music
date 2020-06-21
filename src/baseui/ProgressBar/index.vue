@@ -39,7 +39,11 @@ export default {
     };
   },
   //监听属性 类似于data概念
-  computed: {},
+  computed: {
+    _percent() {
+      return this.percent;
+    }
+  },
   //监控data中的数据变化
   //方法集合
   methods: {
@@ -88,25 +92,38 @@ export default {
         this.$refs.progressBar.clientWidth - this.progressBtnWidth;
       const curPercent = this.$refs.progress.clientWidth / barWidth; // 新的进度计算
       this.percentChange(curPercent); // 把新的进度传给回调函数并执行
-    }
+    },
+    computedBar() {}
   },
   //生命周期 - 创建完成（可以访问当前this实例）
   beforeCreate() {}, //生命周期 - 创建之前
   watch: {
-    percent(nv) {
-      if (nv >= 0 && nv <= 1 && !this.touch.initiated) {
-        const barWidth =
-          this.$refs.progressBar.clientWidth - this.progressBtnWidth;
-        const offsetWidth = nv * barWidth;
-        this.$refs.progress.style.width = `${offsetWidth}px`;
-        this.$refs.progressBtn.style.transform = `translate3d(${offsetWidth}px, 0, 0)`;
+    percent: {
+      handler: function(nv) {
+        if (nv >= 0 && nv <= 1 && !this.touch.initiated) {
+          const barWidth =
+            this.$refs.progressBar.clientWidth - this.progressBtnWidth;
+          const offsetWidth = nv * barWidth;
+          this.$refs.progress.style.width = `${offsetWidth}px`;
+          this.$refs.progressBtn.style.transform = `translate3d(${offsetWidth}px, 0, 0)`;
+        }
       }
-    }
+    },
   },
   created() {},
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）
-  mounted() {},
+  mounted() {
+    this.$nextTick(function() {
+      if (this._percent >= 0 && this._percent <= 1 && !this.touch.initiated) {
+        const barWidth =
+          this.$refs.progressBar.clientWidth - this.progressBtnWidth;
+        const offsetWidth = this._percent * barWidth;
+        this.$refs.progress.style.width = `${offsetWidth}px`;
+        this.$refs.progressBtn.style.transform = `translate3d(${offsetWidth}px, 0, 0)`;
+      }
+    });
+  },
   beforeUpdate() {}, //生命周期 - 更新之前
   updated() {}, //生命周期 - 更新之后 refs可以取到
   beforeDestroy() {}, //生命周期 - 销毁之前

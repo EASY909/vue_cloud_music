@@ -23,7 +23,7 @@ const mutations = {
     }
 }
 const actions = {
-    getSingerInfo ({ commit },id) {
+    getSingerInfo({ commit },id) {
         return new Promise((resolve, reject) => {
             getSingerInfoRequest(id).then(data   => {
                 commit("changeArtist",data.artist);

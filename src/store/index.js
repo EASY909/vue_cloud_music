@@ -15,6 +15,7 @@ export default new Vuex.Store({
     Singers,
     Rank,
     Album,
-    Player
+    Player,
+    Artist
   }
 })

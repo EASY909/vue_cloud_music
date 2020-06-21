@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="content">
+  <div :class="['content',{bottom:bottom}]">
     <Scroll :scrollconfig="scrollconfig" name="recommend" :data="data">
       <div>
         <Slider :bannerList="bannerList" />
@@ -46,13 +46,22 @@ export default {
         bounceBottom: true
       },
       loading: true,
-      data: []
+      data: [],
+      bottom: true
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    "$store.state.Player.playList": {
+      handler: function(nv) {
+        console.log(nv.length);
+        nv.length !== 0 ? (this.bottom = true) : (this.bottom = false);
+      },
+      immediate: true
+    }
+  },
   //方法集合
   methods: {},
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -100,7 +109,10 @@ export default {
 .content {
   position: fixed;
   top: 90px;
-  bottom: 0;
+  bottom: 0px;
   width: 100%;
+}
+.bottom {
+  bottom: 60px;
 }
 </style>
