@@ -2,7 +2,13 @@
 <template>
   <transition name="slide-fade" v-if="showPlayList">
     <div class="PlayListWrapper" ref="playListRef" @click="handleTogglePlayList">
-      <div class="list_wrapper">
+      <div
+        class="list_wrapper"
+        ref="listWrapperRef"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="handleTouchEnd"
+      >
         <div class="ListHeader">
           <h1 class="title">
             <div v-if="mode===playMode.sequence">
@@ -21,7 +27,13 @@
             <!-- <span class="iconfont clear" @click="handleShowClear">&#xe637;</span> -->
           </h1>
           <div class="ScrollWrapper">
-            <Scroll name="PlayList" :scrollconfig="scrollconfig" :data="data">
+            <Scroll
+              name="PlayList"
+              ref="listContentRef"
+              @onScroll="handleScroll"
+              :scrollconfig="scrollconfig"
+              :data="data"
+            >
               <div class="ListContent">
                 <li
                   class="item"
@@ -30,7 +42,7 @@
                   @click="handleChangeCurrentIndex($event,index)"
                 >
                   <i v-if="getCurrentIcon(item)" class="current iconfont icon-play">&#xe695;</i>
-                   <i v-else class="current  iconfont"></i>
+                  <i v-else class="current iconfont"></i>
                   <span class="text">{{item.name}} - {{getName(item.ar)}}</span>
                   <!-- <span class="like">
                     <i class="iconfont">&#xe649;</i>
@@ -66,7 +78,11 @@ export default {
       scrollconfig: {
         bounceTop: false
       },
-      playMode: playMode
+      playMode: playMode,
+      canTouch: true,
+      initialed: false,
+      startY: 0,
+      distance: 0
     };
   },
   //监听属性 类似于data概念
@@ -133,7 +149,38 @@ export default {
       this.$store.commit("Player/handleDeleteSong", song);
     },
     getCurrentIcon(item) {
-      return this.$store.state.Player.currentSong.id === item.id; 
+      return this.$store.state.Player.currentSong.id === item.id;
+    },
+    handleScroll(pos) {
+      let state = pos.y === 0;
+      // console.log(state);
+      this.canTouch = state;
+      // setCanTouch(state);
+    },
+    handleTouchStart(e) {
+      if (!this.canTouch || this.initialed) return;
+      this.$refs.listWrapperRef.style["transition"] = "";
+      this.distance = 0;
+      this.startY = e.touches[0].pageY;
+      this.initialed = true;
+    },
+    handleTouchMove(e) {
+      if (!this.canTouch || !this.initialed) return;
+
+      let distance = e.touches[0].pageY - this.startY;
+      if (distance < 0) return;
+      this.distance = distance;
+      this.$refs.listWrapperRef.style.transform = `translate3d(0, ${distance}px, 0)`;
+    },
+    handleTouchEnd(e) {
+      this.initialed = false;
+
+      if (this.distance >= 150) {
+        this.$store.commit("Player/changeShowPlayList", false);
+      } else {
+        this.$refs.listWrapperRef.style["transition"] = "all 0.3s";
+        this.$refs.listWrapperRef.style.transform = `translate3d(0px, 0px, 0px)`;
+      }
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

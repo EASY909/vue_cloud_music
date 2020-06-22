@@ -65,6 +65,7 @@ export default {
       const imageDOM = this.$refs.imageWrapper;
       const headerDOM = this.$refs.headerEl.$el;
       const minScrollY = -(this.Height - OFFSET) + HEADER_HEIGHT;
+      console.log(minScrollY);
       const percent = Math.abs(newY / this.Height);
       if (newY > 0) {
         imageDOM.style["transform"] = `scale(${1 + percent})`;

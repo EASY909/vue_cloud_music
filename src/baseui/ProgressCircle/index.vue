@@ -83,7 +83,7 @@ export default {
     }
     &.progress-bar {
       transform: scale(0.9) rotate(-90deg);
-      stroke: $colorShadow;
+      stroke: $themeColor;
     }
   }
 }

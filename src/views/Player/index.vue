@@ -20,6 +20,9 @@
       :handleNext="handleNext"
       :changeMode="changeMode"
       :togglePlayList="togglePlayListDispatch"
+      :currentLyric="currentLyric"
+      :currentPlayingLyric="currentPlayingLyric"
+      :currentLineNum="currentLineNum"
     ></NormalPlayer>
 
     <audio ref="audioRef" @timeupdate="updateTime" @ended="handleEnd" @error="handleError"></audio>
@@ -34,8 +37,8 @@ import NormalPlayer from "./normalPlayer";
 import PlayList from "./PlayList";
 import { getSongUrl, findIndex, shuffle } from "@/utils";
 import { playMode } from "@/api/config";
-import Lyric from '@/utils/lyric-parser';
-
+import Lyric from "@/utils/lyric-parser";
+import { getLyricRequest } from "@/api/cloudapi";
 // import {check} from "@/api/cloudapi"
 export default {
   //import引入的组件需要注入到对象中才能使用
@@ -50,8 +53,9 @@ export default {
       duration: 0,
       preSong: {},
       songReady: true, // 标志位为 false
-      currentPlayingLyric:"",
-      currentLineNum:0
+      currentPlayingLyric: "",
+      currentLineNum: 0,
+      currentLyric: null,
     };
   },
   //监听属性 类似于data概念
@@ -97,6 +101,15 @@ export default {
         this.init();
       },
       deep: true
+    },
+    "$store.state.Player.fullScreen": function(nv) {
+      if (!nv) return;
+      if (this.currentLyric && this.currentLyric.lines.length) {
+        this.handleLyric({
+          lineNum: this.currentLineNum,
+          txt: this.currentLyric.lines[this.currentLineNum].txt
+        });
+      }
     }
   },
   //方法集合
@@ -106,7 +119,6 @@ export default {
     },
     init() {
       console.log("开始播放");
-      console.log(this._playList.length);
       if (
         !this._playList.length ||
         this._currentIndex === -1 ||
@@ -130,6 +142,9 @@ export default {
       // this.$store.commit("Player/changePlayMode", 0); //播放顺序改为顺序播放
       this.currentTime = 0;
       this.duration = (current.dt / 1000) | 0;
+
+      this.getLyric(current.id);
+      this.currentTime = 0;
     },
     updateTime(e) {
       this.currentTime = e.target.currentTime;
@@ -142,6 +157,10 @@ export default {
       this.$refs.audioRef.currentTime = newTime;
       if (!this.$store.state.Player.playing) {
         this.$store.commit("Player/changePlayingState", true);
+      }
+
+      if (this.currentLyric) {
+        this.currentLyric.seek(newTime * 1000);
       }
     },
     handleLoop() {
@@ -222,6 +241,35 @@ export default {
     },
     togglePlayListDispatch() {
       console.log(111);
+    },
+    handleLyric({ lineNum, txt }) {
+      if (!this.currentLyric) return;
+      this.currentLineNum = lineNum;
+      this.currentPlayingLyric = txt;
+    },
+    getLyric(id) {
+      let lyric = "";
+      if (this.currentLyric) {
+        this.currentLyric.stop();
+      }
+      // 避免 songReady 恒为 false 的情况
+      getLyricRequest(id)
+        .then(data => {
+          lyric = data.lrc.lyric;
+          console.log(lyric);
+          if (!lyric) {
+            this.currentLyric.current = null;
+            return;
+          }
+          this.currentLyric = new Lyric(lyric, this.handleLyric);
+          this.currentLyric.play();
+          this.currentLineNum = 0;
+          this.currentLyric.seek(0);
+        })
+        .catch(() => {
+          this.songReady = true;
+          this.$refs.audioRef.play();
+        });
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）

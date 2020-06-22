@@ -71,7 +71,8 @@ export default {
     pullDownLoading(nv, ov) {
       this.pullDownLoading = nv;
     },
-    data() {
+    data(nv) {
+      // console.log(nv);
       this.$nextTick(() => {
         this.brefresh();
       });
@@ -80,7 +81,7 @@ export default {
   //方法集合
   methods: {
     _initScroll() {
-      console.log(this.name);
+      console.log(this.name + "新的scroll");
       if (!this.$refs.wrapper) {
         return;
       }
@@ -102,6 +103,7 @@ export default {
       });
 
       if (this.scrollConfig.onScroll) {
+        console.log(this.my_this === this);
         this.scroll.on("scroll", pos => {
           console.log(pos);
           this.$emit("onScroll", pos);
@@ -141,7 +143,7 @@ export default {
     }, 300),
     handlePullUp: debounce(function() {
       this.$emit("pullUp");
-    }, 300),
+    }, 300)
   },
 
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -155,14 +157,17 @@ export default {
   beforeCreate() {}, //生命周期 - 创建之前
   beforeMount() {}, //生命周期 - 挂载之前
   beforeUpdate() {}, //生命周期 - 更新之前
-  updated() {
-
-  }, //生命周期 - 更新之后
-  beforeDestroy() {}, //生命周期 - 销毁之前
+  updated() {}, //生命周期 - 更新之后
+  beforeDestroy() {
+    console.log("scroll销毁");
+    this.scroll && this.scroll.disable();
+  }, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
   activated() {
+    this.scroll && this.scroll.enable();
   },
   deactivated() {
+    this.scroll && this.scroll.disable();
   }
   //如果页面有keep-alive缓存功能，这个函数会触发
 };

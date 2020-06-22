@@ -14,8 +14,8 @@
         <h1 class="subtitle">{{getName(song.ar)}}</h1>
       </div>
 
-      <div class="Middle">
-        <div class="CDWrapper">
+      <div class="Middle" @click="toggleCurrentState">
+        <div class="CDWrapper" v-show="currentState !=='lyric'">
           <div class="cd">
             <img
               :class="`image play ${playing ? '': 'pause'}`"
@@ -24,7 +24,26 @@
             />
           </div>
         </div>
+
+        <div class="LyricContainer" v-if="currentState ==='lyric'">
+          <Scroll name="Lyric" :data="data" ref="lyricScrollRef">
+            <div class="LyricWrapper" v-if="currentLyric">
+              <template v-for="(item,index) in currentLyric.lines">
+                <p
+                  ref="lyricLineRefs"
+                  :class="currentLineNum===index?'current':''"
+                  :key="index"
+                >{{item.txt}}</p>
+                <!-- <p v-else class="text" :key="index">{{item.txt}}</p> -->
+              </template>
+            </div>
+            <div class="LyricWrapper" v-else>
+              <p class="text pure">纯音乐，请欣赏。</p>
+            </div>
+          </Scroll>
+        </div>
       </div>
+
       <div class="Bottom">
         <div class="ProgressWrapper">
           <span class="time time-l">{{formatPlayTime(currentTime)}}</span>
@@ -71,9 +90,10 @@
 import { getName, formatPlayTime } from "@/utils";
 import { playMode } from "@/api/config";
 import ProgressBar from "@b/ProgressBar";
+import Scroll from "@b/Scroll";
 export default {
   //import引入的组件需要注入到对象中才能使用
-  components: { ProgressBar },
+  components: { ProgressBar, Scroll },
   props: {
     song: {
       type: Object,
@@ -110,6 +130,18 @@ export default {
     togglePlayList: {
       type: Function,
       default: null
+    },
+    currentLyric: {
+      type: Object,
+      default: null
+    },
+    currentLineNum: {
+      type: Number,
+      default: 0
+    },
+    currentPlayingLyric: {
+      type: String,
+      default: ""
     }
     // fullScreen:{
     //     type:Boolean,
@@ -123,7 +155,9 @@ export default {
       fullScreen: false,
       playing: false,
       mycurrentTime: 0,
-      playmode: playMode
+      playmode: playMode,
+      currentState: "",
+      data: []
     };
   },
   //监听属性 类似于data概念
@@ -148,6 +182,10 @@ export default {
       console.log("全面屏暂停");
       e.stopPropagation();
       this.$store.commit("Player/changePlayingState", state);
+
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay(this.currentTime * 1000);
+      }
     },
     formatPlayTime(time) {
       return formatPlayTime(time);
@@ -158,6 +196,15 @@ export default {
     handleTogglePlayList(e) {
       e.stopPropagation();
       this.$store.commit("Player/changeShowPlayList", true);
+    },
+    toggleCurrentState() {
+      let nextState = "";
+      if (this.currentState !== "lyric") {
+        nextState = "lyric";
+      } else {
+        nextState = "";
+      }
+      this.currentState = nextState;
     }
   },
   //生命周期 - 创建完成（可以访问当前this实例）
@@ -180,11 +227,29 @@ export default {
     },
     "$store.state.Player.mode": function(nv) {
       console.log(nv);
+    },
+    currentLyric: {
+      handler: function(nv) {
+        this.data = [...nv.lines];
+      }
+    },
+    currentLineNum(nv) {
+      if (!this.$refs.lyricScrollRef) return;
+      let bScroll = this.$refs.lyricScrollRef;
+
+      if (nv > 5) {
+        let lineEl = this.$refs.lyricLineRefs[nv - 5];
+        console.log(lineEl);
+        bScroll.scroll.scrollToElement(lineEl, 1000);
+      } else {
+        bScroll.scroll.scrollTo(0, 0, 1000);
+      }
+    },
+    currentPlayingLyric(nv) {
+      // console.log(nv);
     }
   },
-  created() {
-    this.mysong = this.song;
-  },
+  created() {},
   beforeMount() {}, //生命周期 - 挂载之前
   //生命周期 - 挂载完成（可以访问DOM元素）
   mounted() {},
@@ -371,6 +436,37 @@ export default {
       .progress-bar-wrapper {
         flex: 1;
       }
+    }
+  }
+}
+.LyricContainer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* 遮罩 会有模糊效果，看个人喜欢*/
+  /* mask-image: -webkit-gradient(linear,left top,left bottom,color-stop(0,hsla(0,0%,100%,0)),color-stop(10%,hsla(0,0%,100%,.6)),color-stop(25%,#fff),color-stop(75%,#fff),color-stop(85%,hsla(0,0%,100%,.6)),to(hsla(0,0%,100%,0)));
+  mask-image: linear-gradient(linear,left top,left bottom,color-stop(0,hsla(0,0%,100%,0)),color-stop(10%,hsla(0,0%,100%,.6)),color-stop(25%,#fff),color-stop(75%,#fff),color-stop(85%,hsla(0,0%,100%,.6)),to(hsla(0,0%,100%,0))); */
+}
+.LyricWrapper {
+  position: absolute;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+  p {
+    line-height: 32px;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: normal;
+    font-size: $fontSizeL;
+    &.current {
+      color: #fff;
+    }
+    &.pure {
+      position: relative;
+      top: 30vh;
     }
   }
 }
