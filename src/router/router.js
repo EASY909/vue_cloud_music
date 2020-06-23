@@ -65,8 +65,15 @@ export default new Router({
             }
           ]
         },
+        {
+          path: "/search",
+          name: "Search",
+          meta: {
+            keepAlive: true // 不需要缓存
+          },
+          component: () => import("../views/Search")
+        },
       ]
     },
-
   ]
 });

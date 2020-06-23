@@ -1,7 +1,7 @@
 <!--  -->
 <template>
-  <transition name="slide-fade">
-    <div :class="['Container',{bottom:bottom}]" v-if="currentAlbum">
+  <transition name="slide-fade"  v-if="currentAlbum">
+    <div :class="['Container',{bottom:bottom}]">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
       <Scroll :scrollconfig="scrollconfig" name="Album" @onScroll="handleScroll" :data="data">
         <div>
@@ -33,15 +33,15 @@
           </div>
           <div class="Menu">
             <div>
-              <i class="iconfont">&#xe660;</i>
+              <i class="iconfont">&#xe65c;</i>
               评论
             </div>
             <div>
-              <i class="iconfont">&#xe649;</i>
+              <i class="iconfont">&#xe615;</i>
               点赞
             </div>
             <div>
-              <i class="iconfont">&#xe6dc;</i>
+              <i class="iconfont">&#xe668;</i>
               收藏
             </div>
             <div>
@@ -148,7 +148,10 @@ export default {
     this.getAlbumDataDispatch();
     this.title = "返回";
   }, //如果页面有keep-alive缓存功能，这个函数会触发
-  deactivated() {}
+  deactivated() {
+    this.currentAlbum=null;
+    console.log("歌单销毁");
+  }
 };
 </script>
 <style lang='scss' scoped>

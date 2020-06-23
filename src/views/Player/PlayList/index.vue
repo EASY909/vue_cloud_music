@@ -159,14 +159,15 @@ export default {
     },
     handleTouchStart(e) {
       if (!this.canTouch || this.initialed) return;
-      this.$refs.listWrapperRef.style["transition"] = "";
-      this.distance = 0;
-      this.startY = e.touches[0].pageY;
-      this.initialed = true;
+      if (this.$refs.listWrapperRef) {
+        this.$refs.listWrapperRef.style["transition"] = "";
+        this.distance = 0;
+        this.startY = e.touches[0].pageY;
+        this.initialed = true;
+      }
     },
     handleTouchMove(e) {
       if (!this.canTouch || !this.initialed) return;
-
       let distance = e.touches[0].pageY - this.startY;
       if (distance < 0) return;
       this.distance = distance;

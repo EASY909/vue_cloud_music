@@ -8,6 +8,7 @@ import Rank from "./modules/Rank";
 import Album from "./modules/Album";
 import Artist from "./modules/Artist";
 import Player from "./modules/Player";
+import Search from "./modules/Search";
 export default new Vuex.Store({
   strict: true,
   modules: {
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     Rank,
     Album,
     Player,
-    Artist
+    Artist,
+    Search
   }
 })

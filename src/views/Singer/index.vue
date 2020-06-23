@@ -1,9 +1,9 @@
 <!--  -->
 <template>
-  <transition name="slide-fade">
+  <transition name="slide-fade" v-if="artist">
     <div class="Container">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
-      <div v-if="artist">
+      <div>
         <div class="ImgWrapper" ref="imageWrapper" :style="{background:backgroundImg}">
           <div class="filter"></div>
         </div>
@@ -97,6 +97,10 @@ export default {
     this.id = this.$route.params.id;
     this.getSingerDataDispatch();
   }, //如果页面有keep-alive缓存功能，这个函数会触发
+  deactivated() {
+    console.log("歌手销毁");
+    this.artist = null;
+  }
 };
 </script>
 <style lang='scss' scoped>

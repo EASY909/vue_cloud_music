@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div class="HeaderContainer">
-    <i class="iconfont back" @click="handleClick">&#xe503;</i>
+    <i class="iconfont back" @click="handleClick">&#xe65e;</i>
     <marquee v-if="my_isMarquee">
       <h1>{{my_title}}</h1>
     </marquee>

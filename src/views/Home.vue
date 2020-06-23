@@ -3,7 +3,7 @@
     <div class="top">
       <span class="iconfont">&#xe672;</span>
       <span class="iconfont">&#xe504;</span>
-      <span class="iconfont">&#xe6e1;</span>
+      <span class="iconfont" @click="enterSearch">&#xe6e1;</span>
     </div>
     <div class="tab">
       <div class="tabItem">
@@ -37,6 +37,11 @@ export default {
   name: "home",
   components: {
     Player
+  },
+  methods: {
+    enterSearch(){
+      this.$router.push("/search")
+    }
   }
 };
 </script>

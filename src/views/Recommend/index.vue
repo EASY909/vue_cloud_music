@@ -101,7 +101,11 @@ export default {
   updated() {}, //生命周期 - 更新之后
   beforeDestroy() {}, //生命周期 - 销毁之前
   destroyed() {}, //生命周期 - 销毁完成
-  activated() {} //如果页面有keep-alive缓存功能，这个函数会触发
+  activated() {
+    // console.log("jilai1");
+    // let playList = this.$store.state.Player.playList;
+    // playList.length !== 0 ? (this.bottom = true) : (this.bottom = false);
+  } //如果页面有keep-alive缓存功能，这个函数会触发
 };
 </script>
 <style lang='scss' scoped>
