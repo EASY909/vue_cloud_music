@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="Loading">
+  <div class="LoadingV2">
     <div></div>
     <div></div>
     <div></div>
@@ -42,7 +42,7 @@ export default {
 //@import url(); 引入公共css类
 @import "../../styles/config.scss";
 
-.Loading {
+.LoadingV2 {
     height: 10px;
     width: 100%;
     margin: auto;

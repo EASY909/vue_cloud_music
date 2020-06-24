@@ -12,15 +12,15 @@
         <div class="ListHeader">
           <h1 class="title">
             <div v-if="mode===playMode.sequence">
-              <i class="iconfont" @click="changeMode">&#xe625;</i>
+              <i class="iconfont" @click="changeMode">&#xe509;</i>
               <span class="text">顺序播放</span>
             </div>
             <div v-else-if="mode===playMode.loop">
-              <i class="iconfont" @click="changeMode">&#xe614;</i>
+              <i class="iconfont" @click="changeMode">&#xe506;</i>
               <span class="text">单曲循环</span>
             </div>
             <div v-else>
-              <i class="iconfont" @click="changeMode">&#xe670;</i>
+              <i class="iconfont" @click="changeMode">&#xe619;</i>
               <span class="text">随机播放</span>
             </div>
 
@@ -41,7 +41,7 @@
                   :key="item.id"
                   @click="handleChangeCurrentIndex($event,index)"
                 >
-                  <i v-if="getCurrentIcon(item)" class="current iconfont icon-play">&#xe695;</i>
+                  <i v-if="getCurrentIcon(item)" class="current iconfont icon-play">&#xe666;</i>
                   <i v-else class="current iconfont"></i>
                   <span class="text">{{item.name}} - {{getName(item.ar)}}</span>
                   <!-- <span class="like">

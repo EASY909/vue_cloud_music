@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="Container">
+  <div :class="['RankContainer',{bottom:bottom}]">
     <Scroll :scrollconfig="scrollconfig" name="Rank" :data="data">
       <div>
         <h1 class="offical">官方榜</h1>
@@ -75,13 +75,23 @@ export default {
         // pullUpLoading: true,
         // pullDownLoading: true
       },
-      data: []
+      data: [],
+      bottom: true
     };
   },
   //监听属性 类似于data概念
   computed: {},
   //监控data中的数据变化
-  watch: {},
+  watch: {
+    "$store.state.Player.playList": {
+      handler: function(nv) {
+        // console.log(nv);
+        nv.length !== 0 ? (this.bottom = true) : (this.bottom = false);
+        // this.$forceUpdate();
+      },
+      immediate: true
+    }
+  },
   //方法集合
   methods: {
     getRankListDataDispatch() {
@@ -119,7 +129,10 @@ export default {
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
 // @import "../../styles/config.scss";
-.Container {
+.bottom {
+  bottom: 60px !important;
+}
+.RankContainer {
   position: fixed;
   top: 90px;
   bottom: 0;

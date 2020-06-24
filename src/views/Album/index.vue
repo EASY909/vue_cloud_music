@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <transition name="slide-fade"  v-if="currentAlbum">
-    <div :class="['Container',{bottom:bottom}]">
+    <div :class="['AlbumContainer',{bottom:bottom}]">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
       <Scroll :scrollconfig="scrollconfig" name="Album" @onScroll="handleScroll" :data="data">
         <div>
@@ -91,7 +91,6 @@ export default {
   watch: {
     "$store.state.Player.playList": {
       handler: function(nv) {
-        console.log(nv.length);
         nv.length !== 0 ? (this.bottom = true) : (this.bottom = false);
       },
       immediate: true
@@ -157,9 +156,9 @@ export default {
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
 .bottom {
-  bottom: 60px !important;
+  bottom: 60px;
 }
-.Container {
+.AlbumContainer {
   position: fixed;
   top: 0;
   left: 0;

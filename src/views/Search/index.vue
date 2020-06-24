@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <transition name="slide-fade">
-    <div class="Container">
+    <div class="SearchContainer">
       <SearchBox :newQuery.sync="query"></SearchBox>
       <div class="ShortcutWrapper" v-if="!query">
         <div>
@@ -172,7 +172,7 @@ export default {
 </script>
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
-.Container {
+.SearchContainer {
   position: fixed;
   top: 0;
   left: 0;

@@ -1,9 +1,9 @@
 <!--  -->
 <template>
   <div class="SearchBoxWrapper">
-    <i class="iconfont icon-back" @click="goBack">&#xe503;</i>
+    <i class="iconfont icon-back" @click="goBack">&#xe502;</i>
     <input ref="queryRef" class="box" v-model="query" placeholder="搜索歌曲、歌手、专辑" />
-    <i class="iconfont icon-delete" @click="clearQuery" v-if="query!==''?true:false">&#xe504;</i>
+    <i class="iconfont icon-delete" @click="clearQuery" v-if="query!==''?true:false">&#xe503;</i>
   </div>
 </template>
 
@@ -96,7 +96,7 @@ export default {
     }
   }
   .icon-delete {
-    font-size: 16px;
+    font-size: 24px;
     color: $backgroundColor;
   }
 }

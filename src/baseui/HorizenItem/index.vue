@@ -2,7 +2,7 @@
 <template>
   <Scroll :scrollconfig="scrollconfig" name="HorizenItem" :data="data">
     <div ref="Category">
-      <div class="List">
+      <div class="HoriList">
         <span>{{title}}</span>
         <span
           :class="ListItem"
@@ -87,7 +87,7 @@ export default {
 <style lang='scss' scoped>
 //@import url(); 引入公共css类
 @import "../../styles/config.scss";
-.List {
+.HoriList {
   display: flex;
   align-items: center;
   height: 30px;

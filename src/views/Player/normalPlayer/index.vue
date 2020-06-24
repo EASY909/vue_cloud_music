@@ -55,30 +55,30 @@
 
         <div class="Operators">
           <div class="icon i-left" @click="onChangeMode">
-            <i v-if="mode===playmode.sequence" class="iconfont">&#xe625;</i>
-            <i v-else-if="mode===playmode.loop" class="iconfont">&#xe614;</i>
-            <i v-else class="iconfont">&#xe670;</i>
+            <i v-if="mode===playmode.sequence" class="iconfont">&#xe509;</i>
+            <i v-else-if="mode===playmode.loop" class="iconfont">&#xe506;</i>
+            <i v-else class="iconfont">&#xe619;</i>
           </div>
           <div class="icon i-left" @click="handlePrev">
-            <i class="iconfont">&#xe502;</i>
+            <i class="iconfont">&#xe663;</i>
           </div>
           <div class="icon i-center">
             <i
               v-if="playing"
               @click="e=>clickPlaying(e, false)"
               class="icon-mini iconfont icon-pause"
-            >&#xe60e;</i>
+            >&#xe665;</i>
             <i
               v-else
               @click="e=>clickPlaying(e, true)"
               class="icon-mini iconfont icon-play"
-            >&#xe66e;</i>
+            >&#xe666;</i>
           </div>
           <div class="icon i-right" @click="handleNext">
-            <i class="iconfont">&#xe579;</i>
+            <i class="iconfont">&#xe617;</i>
           </div>
           <div class="icon i-right" @click="handleTogglePlayList">
-            <i class="iconfont">&#xe691;</i>
+            <i class="iconfont">&#xe664;</i>
           </div>
         </div>
       </div>

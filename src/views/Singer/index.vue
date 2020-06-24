@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <transition name="slide-fade" v-if="artist">
-    <div class="Container">
+    <div class="SingerContainer">
       <Header ref="headerEl" :title="title" :isMarquee="isMarquee" />
       <div>
         <div class="ImgWrapper" ref="imageWrapper" :style="{background:backgroundImg}">
@@ -116,7 +116,7 @@ export default {
   transform: translateX(100vw);
   opacity: 0;
 }
-.Container {
+.SingerContainer {
   position: fixed;
   top: 0;
   left: 0;

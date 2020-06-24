@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="top">
-      <span class="iconfont">&#xe672;</span>
-      <span class="iconfont">&#xe504;</span>
-      <span class="iconfont" @click="enterSearch">&#xe6e1;</span>
+      <span class="iconfont">&#xe507;</span>
+      <span class="iconfont">&#xe59c;</span>
+      <span class="iconfont" @click="enterSearch">&#xe65f;</span>
     </div>
     <div class="tab">
       <div class="tabItem">
@@ -35,6 +35,11 @@
 import Player from "@/views/Player";
 export default {
   name: "home",
+  data () {
+    return {
+        react:require("@/assets/react.png")
+    }
+  },
   components: {
     Player
   },

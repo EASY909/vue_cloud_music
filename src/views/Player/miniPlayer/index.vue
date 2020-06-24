@@ -23,12 +23,12 @@
             v-if="playing"
             @click="e=>clickPlaying(e, false)"
             class="icon-mini iconfont icon-pause"
-          >&#xe66e;</i>
+          >&#xe630;</i>
           <i v-else @click="e=>clickPlaying(e, true)" class="icon-mini iconfont icon-play">&#xe66e;</i>
         </ProgressCircle>
       </div>
       <div class="control" @click="handleTogglePlayList">
-        <i class="iconfont">&#xe691;</i>
+        <i class="iconfont">&#xe664;</i>
       </div>
     </div>
   </transition>
