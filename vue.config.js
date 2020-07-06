@@ -55,7 +55,7 @@ module.exports = {
         hotOnly: false,
         proxy: {
             [process.env.VUE_APP_API]: {
-                target: 'http://www.web-jshtml.cn/dependenciesapi/token',
+                target: 'http://localhost:4000',
                 changeOrigin: true,
                 pathRewrite: {
                     ['^' + process.env.VUE_APP_API]: ''

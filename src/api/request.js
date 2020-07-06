@@ -1,6 +1,7 @@
 import axios from 'axios'
 // const BASEURL=process.env.NODE_ENV === 'production' ?'':'/devApi';
-export const BASEURL = 'http://localhost:4000';
+// export const BASEURL = 'http://localhost:4000';
+const BASEURL = process.env.NODE_ENV === 'production' ? process.env.VUE_APP_API : process.env.VUE_APP_API;
 
 const axiosInstance = axios.create({
     baseURL: BASEURL,

@@ -2,7 +2,7 @@
   <div>
     <div class="top">
       <span class="iconfont">&#xe507;</span>
-      <span class="iconfont">&#xe59c;</span>
+      <span class="iconfont"><a href="http://www.easy909.xyz/react_cloud_music">&#xe59c;</a></span>
       <span class="iconfont" @click="enterSearch">&#xe65f;</span>
     </div>
     <div class="tab">

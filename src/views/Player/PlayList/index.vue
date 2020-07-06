@@ -279,7 +279,7 @@ export default {
           .current {
             flex: 0 0 20px;
             width: 20px;
-            font-size: $fontSizeS;
+            font-size: $fontSizeM;
             color: $themeColor;
           }
           .text {
@@ -300,7 +300,7 @@ export default {
           }
           .delete {
             @include extendClick();
-            font-size: $fontSizeS;
+            font-size: $fontSizeM;
             color: $themeColor;
           }
         }
