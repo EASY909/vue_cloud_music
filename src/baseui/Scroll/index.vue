@@ -3,8 +3,12 @@
   <div ref="wrapper" class="ScrollContainer">
     <slot></slot>
 
-    <Loading v-if="pullUpLoading" />
-    <LoadingV2 v-if="pullDownLoading" />
+    <div class="loding1">
+      <Loading v-if="pullUpLoading" />
+    </div>
+    <div class="loding2">
+      <LoadingV2 v-if="pullDownLoading" />
+    </div>
   </div>
 </template>
 
@@ -69,6 +73,7 @@ export default {
       this.pullUpLoading = nv;
     },
     pullDownLoading(nv, ov) {
+      console.log(nv);
       this.pullDownLoading = nv;
     },
     data(nv) {
@@ -103,9 +108,8 @@ export default {
       });
 
       if (this.scrollConfig.onScroll) {
-        console.log(this.my_this === this);
         this.scroll.on("scroll", pos => {
-          console.log(pos);
+          // console.log(pos);
           this.$emit("onScroll", pos);
         });
       }
@@ -178,5 +182,25 @@ export default {
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
+.loding2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0px;
+  height: 30px;
+  margin: auto;
+  z-index: 100;
+}
+
+.loding1 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 5px;
+  width: 60px;
+  height: 60px;
+  margin: auto;
+  z-index: 100;
 }
 </style>

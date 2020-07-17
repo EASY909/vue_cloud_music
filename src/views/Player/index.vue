@@ -141,6 +141,7 @@ export default {
       this.$store.commit("Player/changePlayingState", true); //播放状态
       // this.$store.commit("Player/changePlayMode", 0); //播放顺序改为顺序播放
       this.currentTime = 0;
+      // console.log(current.dt);
       this.duration = (current.dt / 1000) | 0;
 
       this.getLyric(current.id);

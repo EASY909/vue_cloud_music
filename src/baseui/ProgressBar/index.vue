@@ -82,6 +82,7 @@ export default {
     },
     progressClick(e) {
       const rect = this.$refs.progressBar.getBoundingClientRect();
+     
       const offsetWidth = e.pageX - rect.left;
       this.offset(offsetWidth);
       this.changePercent();

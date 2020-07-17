@@ -160,6 +160,7 @@ export default {
       }
     },
     handlePullUp() {
+     
       this.pullUpRefreshDispatch(
         this.category,
         this.alpha,

@@ -35,9 +35,6 @@ const mutations = {
     changeCurrentIndex(state, value) {
         state.currentIndex = value;
     },
-    changePlayingState(state, value) {
-        state.playing = value;
-    },
     changeShowPlayList(state, value) {
         state.showPlayList = value;
     },

@@ -10,6 +10,16 @@ module.exports = {
      * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
      **/
     configureWebpack: (config) => {
+        // config.plugin('html')
+        // .tap(args => {
+        //     args[0].cdn = cdn
+        //     return args
+        // })
+        config.externals = {
+            'vue': 'Vue',
+            'vuex': 'Vuex',
+            'vue-router': 'VueRouter',
+        }
         config.resolve = { // 配置解析别名
             extensions: ['.js', '.json', '.vue'],
             alias: {
@@ -20,6 +30,7 @@ module.exports = {
                 '@b': path.resolve(__dirname, './src/baseui'),
             }
         }
+       
     },
     // 生产环境是否生成 sourceMap 文件
     productionSourceMap: false,
